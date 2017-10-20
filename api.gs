@@ -19,3 +19,26 @@ function testing(){
     Logger.log(to);
   }
 }
+
+function StartText(e){
+  /*var postData = {
+        "replyToken" : event.replyToken,
+        "messages" : [
+          {
+            "type" : "templete",
+            "title" : "性別",
+            "altText" : "性別はどっちや",
+            "templete" : "かえってくれ"
+          }
+        ]
+      };
+      
+      var options = {
+        "method" : "post",
+        "headers" : {
+          "Content-Type" : "application/json",
+          "Authorization" : "Bearer " + channel_access_token
+        },
+        "payload" : JSON.stringify(postData)
+      };*/
+}

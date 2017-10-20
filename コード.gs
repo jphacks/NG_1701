@@ -6,6 +6,8 @@ function doPost(e) {
     if(event.type == "message"){lineReply(event);}
     else if(event.type == "follow"){
       
+      StartText(event);
+      
       /*var postData = {
         "replyToken" : event.replyToken,
         "messages" : [
