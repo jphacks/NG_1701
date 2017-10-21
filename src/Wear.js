@@ -5,6 +5,25 @@ var Wear = function () {
 
 }
 
+// しょーいが呼ぶやつ(画像とリンクのセットの配列)
+Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gener){
+  var response = [
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg",
+      "link" : "http://wear.jp/journal401x2/10977377/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg",
+      "link" : "http://wear.jp/journal401x2/10977377/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg",
+      "link" : "http://wear.jp/journal401x2/10977377/"
+    }
+  ]
+  return response;
+}
+
 Wear.prototype.getImageUrl = function(gender, date, region, page){
   var imgUrl = "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png";
   var link = "http://jackhp.webcrow.jp/";
