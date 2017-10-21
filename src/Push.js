@@ -104,15 +104,32 @@ GetWeatherData.prototype.Todaytemp = function(json){
   }
 
 //不快指数や過去のデータ
+var Indexinfo = function(){
+};
+//不快指数の計算
+indexinfo.prototype.discomfort = function(list){
+  //[0]朝[1]昼[2]夜
+  var discomlist = new Array(3);
+  for (var i=0;i<3;i++){
+    var T = list[i];
+    var H = list[i+3];
+    discomlist[i] = 0.81*T+0.01*H*(0.99*T-14.3)+46.3;
+  }
+  return discomlist;
+}
+
+
 
 //テスト関数
 function testshoi(){
   var push = new Push();
   var getweatherdata = new GetWeatherData();
+  var indexinfo = new Indexinfo();
   var weather = getweatherdata.GetWeather(36,136);
   var todayweather = getweatherdata.Todaytemp(weather);
-  for(var i=0;i<6;i++){
-    push.pushtext(todayweather[i]);
+  var discomindex = indexinfo.discomfort(todayweather);
+  for(var i=0;i<3;i++){
+    push.pushtext(discomindex[i]);
   }
 }
 
