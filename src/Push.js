@@ -49,45 +49,76 @@ var options = {
 return UrlFetchApp.fetch(this.url, options);
 }
 
-//templateの作成
-Push.prototype.maketemplate = function(imageurl){
+Push.prototype.pushtext2 = function(text){
+
+var postData = {
+  "to" : this.shoiUserId,
+  "messages" : [
+    {
+      'type':'text',
+      'text':text,
+    }
+  ]
+};
+this.pushData(postData);
+}
+
+//carouselを送る
+Push.prototype.pushCarousel = function(weburl,imageurl,altText){
+  var columns = new Array(weburl.length);
+  for (var i=0;i<weburl.length;i++){
+    var actions = this.makeActions(weburl[i]);
+    var column = this.makeColumnforCarousel(imageurl[i],actions);
+    columns[i] = column;
+  }
+    var template = this.makeCarouselTemplate(columns);
+    var postdata = this.makeTemplatePostData(altText,template);
+    this.pushData(postdata);
+}
+
+//templateのPostData作る
+Push.prototype.makeTemplatePostData = function(altText,template){
+  var PostData = {
+    "to" : this.shoiUserId,
+    "messages":[
+      {
+        'type':'template',
+        'altText':altText,
+        'template':template
+      }
+    ]
+  };
+  return PostData;
+}
+
+//templateを作る
+Push.prototype.makeCarouselTemplate = function(columns){
   var template = {
-      "type": "buttons",
-      "thumbnailImageUrl": imageurl,
-      "title": "Menu",
-      "text": "Please select",
-      "actions": [
-          {
-            "type": "postback",
-            "label": "Buy",
-            "data": "action=buy&itemid=123"
-          },
-          {
-            "type": "postback",
-            "label": "Add to cart",
-            "data": "action=add&itemid=123"
-          },
-          {
-            "type": "uri",
-            "label": "View detail",
-            "uri": imgaeurl
-          }
-      ]
-    }
-    return template;
+    'type':'image_carousel',
+    'columns':columns
+  };
+  return template;
 }
 
-//template message を送る
-Push.prototype.pushtemplate = function(altText ,url){
-  var template = this.maketemplate(url);
-  var postData = {
-  "type": "template",
-  "altText": altText,
-  "template": template
-    }
-  this.pushData(postData);
+Push.prototype.makeColumnforCarousel = function(imageurl,actions){
+  var column = {
+    'imageUrl':imageurl,
+    //'title':title,
+    //'text':body,
+    'action':actions
+  };
+  return column;
 }
 
+Push.prototype.makeActions = function(Url){
+  var actions =
+    {
+      "type":"uri",
+      "label":"Open Browser",
+      "uri":Url
+    };
+  return actions;
+}
 
 //気温湿度などのデータ取得クラス
 var GetWeatherData = function(){
@@ -97,7 +128,7 @@ var GetWeatherData = function(){
 //OpenWeatherMapAPIから情報を取得
 GetWeatherData.prototype.GetWeather = function(lat,lon) {
   var API_KEY="9d287aeaef7ecc9dae9837a2d2f96934";
-  var url="http://api.openweathermap.org/data/2.5/forecast?lat="+35+"&lon="+139+"&APPID="+API_KEY+"&type=hour&cnt=12&units=metric";
+  var url="http://api.openweathermap.org/data/2.5/forecast?lat="+35+"&lon="+139+"&APPID="+API_KEY+"&lang=ja&type=hour&cnt=12&units=metric";
   var responce=UrlFetchApp.fetch(url);
   //return responce.getContentText();
   var json=JSON.parse(responce.getContentText());
@@ -131,11 +162,11 @@ GetWeatherData.prototype.Layout = function(json){
   return result;
 }
 
-//気候データから、今日の朝昼夜の気温と湿度を配列で返す
+//気候データから、今日の朝昼夜の気温と湿度と天候を配列で返す
 GetWeatherData.prototype.Todaytemp = function(json){
     //[その時間からいくつ目の３時間ごとのデータか][データ番号]
     //データ番号 0~2 朝昼夜気温 3~5 朝昼夜湿度
-    var weatherlist = new Array(6);
+    var weatherlist = new Array(8);
     var cnt=Number(json.cnt);
     var list=new Array(cnt);
     var firstdate=new Date(Number(json.list[0].dt)*1000);
@@ -145,13 +176,15 @@ GetWeatherData.prototype.Todaytemp = function(json){
     }
     for(var i=0;i<cnt;i++){
       var date=new Date(Number(json.list[i].dt)*1000);
-      if(date.getDate()==firstdate.getDate() && date.getHours() == 6){
-        weatherlist[0]=json.list[i].main.temp;
+      if(date.getDate()==firstdate.getDate() && date.getHours() == 9){
+        weatherlist[0]=json.list[i].main.temp_min;
         weatherlist[3]=json.list[i].main.humidity;
+        weatherlist[6]=json.list[i].weather[0].description;
       }
       if(date.getDate()==firstdate.getDate() && date.getHours() == 12){
         weatherlist[1]=json.list[i].main.temp;
         weatherlist[4]=json.list[i].main.humidity;
+        weatherlist[7]=json.list[i].weather[0].description;
       }
       if(date.getDate()==firstdate.getDate() && date.getHours() == 21){
         weatherlist[2]=json.list[i].main.temp;
@@ -159,6 +192,35 @@ GetWeatherData.prototype.Todaytemp = function(json){
       }
     }
     return weatherlist;
+  }
+
+  //最高最低気温をだす
+  GetWeatherData.prototype.MaxMinTemp = function(templist){
+    var daytemplist = new Array(2);
+    var maxtemp;
+    var mintemp;
+    maxtemp = Math.max(templist[0],templist[1],templist[2]);
+    mintemp = Math.min(templist[0],templist[1],templist[2]);
+    daytemplist[0] = maxtemp;
+    daytemplist[1] = mintemp;
+    return daytemplist;
+  }
+
+  //[0]と[1]の天気をだす
+  GetWeatherData.prototype.Weathers = function(todaytemp){
+    var weathers = new Array(2);
+    weathers[0] = todaytemp[6];
+    weathers[1] = todaytemp[7];
+    return weathers;
+  }
+
+  GetWeatherData.prototype.TempAndWeather = function(MaxMinTemp,Weathers){
+    var tempandweather = new Array(4);
+    tempandweather[0] = MaxMinTemp[0];
+    tempandweather[1] = MaxMinTemp[1];
+    tempandweather[2] = Weathers[0];
+    tempandweather[3] = Weathers[1];
+    return tempandweather;
   }
 
 //不快指数や過去のデータ
@@ -176,6 +238,90 @@ Indexinfo.prototype.discomfort = function(list){
   return discomlist;
 }
 
+//不快指数リストから厚着度を算出します
+Indexinfo.prototype.atugido = function(discomlist){
+  var Atugido = new Array(3);
+  for(var i=0;i<3;i++){
+    if(discomlist[i]<55){
+      Atugido[i]=0;
+    }else if(55 <= discomlist[i] && discomlist[i] <60){
+      Atugido[i]=1;
+    }else if(60 <= discomlist[i] && discomlist[i] <65){
+      Atugido[i]=2;
+    }else if(65 <= discomlist[i] && discomlist[i] <70){
+      Atugido[i]=3;
+    }else if(70 <= discomlist[i] && discomlist[i] <75){
+      Atugido[i]=4;
+    }else if(75 <= discomlist[i] && discomlist[i] <80){
+      Atugido[i]=5;
+    }else if(80 <= discomlist[i] && discomlist[i] <110){
+      Atugido[i]=6;
+    }else{
+      Atugido[i]=7;
+    }
+  }
+  return Atugido;
+}
+
+var makeMaterial = function(){
+
+};
+
+makeMaterial.prototype.makeText = function(atugido){
+  var text;
+  var plusword0;
+  var plusword1;
+  var equalword;
+  var minusword0;
+  var minusword1;
+  if(atugido[1]<4){
+    plusword0 = "気温が上がり";
+    plusword1 = "気温が上がる";
+    equalword = "気温は上がらず";
+    minusword0 = "気温が下がり";
+    minusword1 = "気温が下がる";
+  }else{
+    plusword0 = "暑さが増し";
+    plusword1 = "暑さが増す";
+    equalword = "気温は変わらず";
+    minusword0 = "涼しくなり";
+    minusword1 = "涼しくなる";
+  }
+
+  //朝の厚着度が存在する場合
+  if(atugido[0]<7){
+    if(atugido[0]<atugido[1]){
+      text = "日中になると"+plusword0;
+      if(atugido[1]<atugido[2]){
+        text += "夜になるとさらに"+plusword1+"でしょう";
+      }else if(atugido[1]==atugido[2]){
+        text += "夜はその気温が続くでしょう";
+      }else if(atugido[1]>atugido[2]){
+        text += "夜は"+minusword1+"でしょう";
+      }
+    }else if(atugido[0]==atugido[1]){
+      text = "日中になっても"+equalword;
+      if(atugido[1]<atugido[2]){
+        text += "夜になると"+plusword1+"でしょう";
+      }else if(atugido[1]==atugido[2]){
+        text += "夜はその気温が続くでしょう";
+      }else if(atugido[1]>atugido[2]){
+        text += "夜は"+minusword1+"でしょう";
+      }
+    }else if(atugido[0]>atugido[1]){
+      text = "日中になると"+minusword0;
+      if(atugido[1]<atugido[2]){
+        text += "夜になると"+plusword1+"でしょう";
+      }else if(atugido[1]==atugido[2]){
+        text += "夜はその気温が続くでしょう";
+      }else if(atugido[1]>atugido[2]){
+        text += "夜はさらに"+minusword1+"でしょう";
+      }
+    }
+  }
+  return text;
+}
+
 
 
 //テスト関数
@@ -183,16 +329,41 @@ function testshoi(){
   var push = new Push();
   var getweatherdata = new GetWeatherData();
   var indexinfo = new Indexinfo();
+  var makematerial = new makeMaterial();
+  //apiから手に入る天気の情報
   var weather = getweatherdata.GetWeather(36,136);
+  //気温、湿度、天候のデータ
   var todayweather = getweatherdata.Todaytemp(weather);
+  //最低、最高気温
+  var maxmintemp = getweatherdata.MaxMinTemp(todayweather);
+  //push.pushtext2(maxmintemp[0]);
+  //push.pushtext2(maxmintemp[1]);
+  //天候のデータ
+  var weathers = getweatherdata.Weathers(todayweather);
+  //push.pushtext2(weathers[0]);
+  //最高、最低、天候のデータ [0]最高気温　[1]最低気温 [2,3]天候
+  var tempandweather = getweatherdata.TempAndWeather(maxmintemp,weathers);
+  push.pushtext2(tempandweather[0]);
+  push.pushtext2(tempandweather[1]);
+  push.pushtext2(tempandweather[2]);
+  push.pushtext2(tempandweather[3]);
   var discomindex = indexinfo.discomfort(todayweather);
-  push.pushtext(discomindex[0]);
-  //push.pushtemplate("https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E","A");
+  var atugido = indexinfo.atugido(discomindex);
+  push.pushtext2(atugido[0]);
+  push.pushtext2(atugido[1]);
+  push.pushtext2(atugido[2]);
+  var text = makematerial.makeText(atugido);
+  push.pushtext2(text);
+  var weburl = new Array(3);
+  var imageurl = new Array(3);
+  weburl[0] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
+  imageurl[0]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
+  weburl[1] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
+  imageurl[1]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
+  weburl[2] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
+  imageurl[2]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
+  push.pushCarousel(weburl,imageurl,"今日の服装をお知らせします");
 }
 
-function testshoi2(){
-  var push = new Push();
-  push.pushtext("A");
-}
 
 //<クラス名>.prototype.<メソッド名>  = function(引数){中身};
