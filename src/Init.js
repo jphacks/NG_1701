@@ -302,6 +302,8 @@ Init.prototype.LocationSetting = function (e) {
         switch (e.message.text) {
         case "愛知":
             this.database.SetValue(this.userId, "location", 130);
+            this.LocationSetting(e);
+            return;
             break;
         default:
             var postData = {
@@ -354,6 +356,94 @@ Init.prototype.LocationSetting = function (e) {
                                     "y": 544,
                                     "width": 333,
                                     "height": 251
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+
+            var options = {
+                "method": "post",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
+                },
+                "payload": JSON.stringify(postData)
+            };
+
+            UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+            return;
+            break;
+        }
+        return;
+        break;
+    case 3:
+        switch (e.message.text) {
+        case "名古屋市":
+            this.database.SetValue(this.userId, "location", 1301);
+            break;
+        default:
+            var postData = {
+                "replyToken": e.replyToken,
+                "messages": [
+                    {
+                        "type": "imagemap",
+                        "baseUrl": "https://dl.dropboxusercontent.com/s/uiwxqy2vvc1fiia/aichi.jpg",
+                        "altText": "地域を選択してください",
+                        "baseSize": {
+                            "width": 1040,
+                            "height": 1040
+                        },
+                        "actions": [
+                            {
+                                "type": "message",
+                                "text": "尾張地方",
+                                "area": {
+                                    "x": 7,
+                                    "y": 46,
+                                    "width": 200,
+                                    "height": 125
+                                }
+                            },
+                            {
+                                "type": "message",
+                                "text": "名古屋市",
+                                "area": {
+                                    "x": 83,
+                                    "y": 177,
+                                    "width": 125,
+                                    "height": 125
+                                }
+                            },
+                            {
+                                "type": "message",
+                                "text": "知多",
+                                "area": {
+                                    "x": 83,
+                                    "y": 308,
+                                    "width": 125,
+                                    "height": 125
+                                }
+                            },
+                            {
+                                "type": "message",
+                                "text": "西三河",
+                                "area": {
+                                    "x": 216,
+                                    "y": 46,
+                                    "width": 125,
+                                    "height": 255
+                                }
+                            },
+                            {
+                                "type": "message",
+                                "text": "東三河",
+                                "area": {
+                                    "x": 349,
+                                    "y": 46,
+                                    "width": 125,
+                                    "height": 384
                                 }
                             }
                         ]
