@@ -389,7 +389,7 @@ Init.prototype.LocationSetting = function (e) {
                 "messages": [
                     {
                         "type": "imagemap",
-                        "baseUrl": "https://dl.dropboxusercontent.com/s/uiwxqy2vvc1fiia/aichi.jpg",
+                        "baseUrl": "https://dl.dropboxusercontent.com/s/s646q2w7aubvbqn/aichi.jpg",
                         "altText": "地域を選択してください",
                         "baseSize": {
                             "width": 1040,
@@ -400,50 +400,50 @@ Init.prototype.LocationSetting = function (e) {
                                 "type": "message",
                                 "text": "尾張地方",
                                 "area": {
-                                    "x": 7,
-                                    "y": 46,
-                                    "width": 200,
-                                    "height": 125
+                                    "x": 24,
+                                    "y": 108,
+                                    "width": 426,
+                                    "height": 266
                                 }
                             },
                             {
                                 "type": "message",
                                 "text": "名古屋市",
                                 "area": {
-                                    "x": 83,
-                                    "y": 177,
-                                    "width": 125,
-                                    "height": 125
+                                    "x": 186,
+                                    "y": 387,
+                                    "width": 266,
+                                    "height": 266
                                 }
                             },
                             {
                                 "type": "message",
                                 "text": "知多",
                                 "area": {
-                                    "x": 83,
-                                    "y": 308,
-                                    "width": 125,
-                                    "height": 125
+                                    "x": 186,
+                                    "y": 665,
+                                    "width": 266,
+                                    "height": 266
                                 }
                             },
                             {
                                 "type": "message",
                                 "text": "西三河",
                                 "area": {
-                                    "x": 216,
-                                    "y": 46,
-                                    "width": 125,
-                                    "height": 255
+                                    "x": 468,
+                                    "y": 108,
+                                    "width": 265,
+                                    "height": 540
                                 }
                             },
                             {
                                 "type": "message",
                                 "text": "東三河",
                                 "area": {
-                                    "x": 349,
-                                    "y": 46,
-                                    "width": 125,
-                                    "height": 384
+                                    "x": 751,
+                                    "y": 108,
+                                    "width": 266,
+                                    "height": 817
                                 }
                             }
                         ]
