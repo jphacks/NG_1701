@@ -4,10 +4,10 @@ var Init = function (e) {
     this.userId = e.source.userId;
     this.database = new Database();
     if (e.type == "follow") {
-        //if (this.database.AddUser(this.userId)) {
-        this.database.SetValue(this.userId, "flag", "Init");
-        this.StartSetting(e);
-        //}
+        if (this.database.AddUser(this.userId)) {
+            this.database.SetValue(this.userId, "flag", "Init");
+            this.StartSetting(e);
+        }
     }
 };
 
