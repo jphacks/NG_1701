@@ -56,7 +56,7 @@ Database.prototype.GetValue = function (userId, key) {
         col++;
     }
 
-    var row = 1;
+    var row = 2;
     while (this.GetValueByCell(row, 1) != "") {
         if (this.GetValueByCell(row, 1) == userId) {
             break;
@@ -64,12 +64,12 @@ Database.prototype.GetValue = function (userId, key) {
         row++;
     }
 
-    this.GetValueByCell(row, col);
+    return this.GetValueByCell(row, col);
 };
 
 //行と列を指定してデータを得る
 Database.prototype.SetValueByCell = function (row, col, value) {
-    return this.sheet.getRange(row, col).setValue(value);
+    this.sheet.getRange(row, col).setValue(value);
 }
 
 //行と列を指定してデータを得る
