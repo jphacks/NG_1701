@@ -49,45 +49,73 @@ var options = {
 return UrlFetchApp.fetch(this.url, options);
 }
 
-//templateの作成
-Push.prototype.maketemplate = function(imageurl){
+Push.prototype.pushtext2 = function(text){
+
+var postData = {
+  "to" : this.shoiUserId,
+  "messages" : [
+    {
+      'type':'text',
+      'text':text,
+    }
+  ]
+};
+this.pushData(postData);
+}
+
+//carouselを送る
+Push.prototype.pushCarousel = function(weburl,imageurl,title,body,altText){
+    var actions = this.makeActions(weburl);
+    var column = this.makeColumnforCarousel(imageurl,title,body,actions);
+    var template = this.makeCarouselTemplate([column]);
+    var postdata = this.makeTemplatePostData(altText,template);
+    this.pushData(postdata);
+}
+
+//templateのPostData作る
+Push.prototype.makeTemplatePostData = function(altText,template){
+  var PostData = {
+    "to" : this.shoiUserId,
+    "messages":[
+      {
+        'type':'template',
+        'altText':altText,
+        'template':template
+      }
+    ]
+  };
+  return PostData;
+}
+
+//templateを作る
+Push.prototype.makeCarouselTemplate = function(columns){
   var template = {
-      "type": "buttons",
-      "thumbnailImageUrl": imageurl,
-      "title": "Menu",
-      "text": "Please select",
-      "actions": [
-          {
-            "type": "postback",
-            "label": "Buy",
-            "data": "action=buy&itemid=123"
-          },
-          {
-            "type": "postback",
-            "label": "Add to cart",
-            "data": "action=add&itemid=123"
-          },
-          {
-            "type": "uri",
-            "label": "View detail",
-            "uri": imgaeurl
-          }
-      ]
-    }
-    return template;
+    'type':'carousel',
+    'columns':columns
+  };
+  return template;
 }
 
-//template message を送る
-Push.prototype.pushtemplate = function(altText ,url){
-  var template = this.maketemplate(url);
-  var postData = {
-  "type": "template",
-  "altText": altText,
-  "template": template
-    }
-  this.pushData(postData);
+Push.prototype.makeColumnforCarousel = function(imageurl,title,body,actions){
+  var column = {
+    'thumbnailImageUrl':imageurl,
+    'title':title,
+    'text':body,
+    'actions':actions
+  };
+  return column;
 }
 
+Push.prototype.makeActions = function(Url){
+  var actions = [
+    {
+      "type":"uri",
+      "label":"Open Browser",
+      "uri":Url
+    }
+  ];
+  return actions;
+}
 
 //気温湿度などのデータ取得クラス
 var GetWeatherData = function(){
@@ -145,7 +173,7 @@ GetWeatherData.prototype.Todaytemp = function(json){
     }
     for(var i=0;i<cnt;i++){
       var date=new Date(Number(json.list[i].dt)*1000);
-      if(date.getDate()==firstdate.getDate() && date.getHours() == 6){
+      if(date.getDate()==firstdate.getDate() && date.getHours() == 9){
         weatherlist[0]=json.list[i].main.temp;
         weatherlist[3]=json.list[i].main.humidity;
       }
@@ -186,13 +214,9 @@ function testshoi(){
   var weather = getweatherdata.GetWeather(36,136);
   var todayweather = getweatherdata.Todaytemp(weather);
   var discomindex = indexinfo.discomfort(todayweather);
-  push.pushtext(discomindex[0]);
-  //push.pushtemplate("https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E","A");
+  push.pushtext2(discomindex[2]);
+  push.pushCarousel("https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E","https://dl.dropboxusercontent.com/s/44q04ftlnbg5q09/gender.jpg","title","body","altText");
 }
 
-function testshoi2(){
-  var push = new Push();
-  push.pushtext("A");
-}
 
 //<クラス名>.prototype.<メソッド名>  = function(引数){中身};
