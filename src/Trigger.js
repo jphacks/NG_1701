@@ -33,7 +33,7 @@ function PushByTime() {
     var col = 2;
     while (pushSheet.getRange(1, col).getValue() != "") {
         var userId = pushSheet.getRange(1, col).getValue();
-        TestOfTriggerPush(userId); //userIdを引数とする関数をここにセット
+        pushTriggerData(userId); //userIdを引数とする関数をここにセット
         col++;
     }
     pushSheet.deleteRow(1);

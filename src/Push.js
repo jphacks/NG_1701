@@ -49,10 +49,10 @@ var options = {
 return UrlFetchApp.fetch(this.url, options);
 }
 
-Push.prototype.pushtext2 = function(text){
+Push.prototype.pushtext2 = function(text,userid){
 
 var postData = {
-  "to" : this.shoiUserId,
+  "to" : userid,
   "messages" : [
     {
       'type':'text',
@@ -64,7 +64,7 @@ this.pushData(postData);
 }
 
 //carouselを送る
-Push.prototype.pushCarousel = function(weburl,imageurl,altText){
+Push.prototype.pushCarousel = function(weburl,imageurl,altText,userid){
   var columns = new Array(weburl.length);
   for (var i=0;i<weburl.length;i++){
     var actions = this.makeActions(weburl[i]);
@@ -72,14 +72,14 @@ Push.prototype.pushCarousel = function(weburl,imageurl,altText){
     columns[i] = column;
   }
     var template = this.makeCarouselTemplate(columns);
-    var postdata = this.makeTemplatePostData(altText,template);
+    var postdata = this.makeTemplatePostData(altText,template,userid);
     this.pushData(postdata);
 }
 
 //templateのPostData作る
-Push.prototype.makeTemplatePostData = function(altText,template){
+Push.prototype.makeTemplatePostData = function(altText,template,userid){
   var PostData = {
-    "to" : this.shoiUserId,
+    "to" : userid,
     "messages":[
       {
         'type':'template',
@@ -126,9 +126,9 @@ var GetWeatherData = function(){
 };
 
 //OpenWeatherMapAPIから情報を取得
-GetWeatherData.prototype.GetWeather = function(lat,lon) {
+GetWeatherData.prototype.GetWeather = function(place) {
   var API_KEY="9d287aeaef7ecc9dae9837a2d2f96934";
-  var url="http://api.openweathermap.org/data/2.5/forecast?lat="+35+"&lon="+139+"&APPID="+API_KEY+"&lang=ja&type=hour&cnt=12&units=metric";
+  var url="http://api.openweathermap.org/data/2.5/forecast?q="+place+",jp&APPID="+API_KEY+"&lang=ja&type=hour&cnt=12&units=metric";
   var responce=UrlFetchApp.fetch(url);
   //return responce.getContentText();
   var json=JSON.parse(responce.getContentText());
@@ -274,7 +274,7 @@ makeMaterial.prototype.makeText = function(atugido){
   var equalword;
   var minusword0;
   var minusword1;
-  if(atugido[1]<4){
+  if(atugido[2]<4){
     plusword0 = "気温が上がり";
     plusword1 = "気温が上がる";
     equalword = "気温は上がらず";
@@ -322,7 +322,28 @@ makeMaterial.prototype.makeText = function(atugido){
   return text;
 }
 
+function pushTriggerData(userid){
+  var push = new Push();
+  var getweatherdata = new GetWeatherData();
+  var indexinfo = new Indexinfo();
+  var makematerial = new makeMaterial();
+  var weather = getweatherdata.GetWeather("Nagoya-shi");
+  var todayweather = getweatherdata.Todaytemp(weather);
+  var discomindex = indexinfo.discomfort(todayweather);
+  var atugido = indexinfo.atugido(discomindex);
+  var text = makematerial.makeText(atugido);
+  push.pushtext2(text,userid);
 
+  var weburl = new Array(3);
+  var imageurl = new Array(3);
+  weburl[0] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
+  imageurl[0]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
+  weburl[1] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
+  imageurl[1]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
+  weburl[2] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
+  imageurl[2]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
+  push.pushCarousel(weburl,imageurl,"今日の服装をお知らせします",userid);
+}
 
 //テスト関数
 function testshoi(){
@@ -331,7 +352,7 @@ function testshoi(){
   var indexinfo = new Indexinfo();
   var makematerial = new makeMaterial();
   //apiから手に入る天気の情報
-  var weather = getweatherdata.GetWeather(36,136);
+  var weather = getweatherdata.GetWeather("Nagoya-shi");
   //気温、湿度、天候のデータ
   var todayweather = getweatherdata.Todaytemp(weather);
   //最低、最高気温
