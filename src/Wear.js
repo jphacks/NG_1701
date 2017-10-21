@@ -5,6 +5,25 @@ var Wear = function () {
 
 }
 
+// しょーいが呼ぶやつ(画像とリンクのセットの配列)
+Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gener){
+  var response = [
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg",
+      "link" : "http://wear.jp/journal401x2/10977377/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg",
+      "link" : "http://wear.jp/journal401x2/10977377/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg",
+      "link" : "http://wear.jp/journal401x2/10977377/"
+    }
+  ]
+  return response;
+}
+
 Wear.prototype.getImageUrl = function(gender, date, region, page){
   var imgUrl = "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png";
   var link = "http://jackhp.webcrow.jp/";
@@ -74,6 +93,10 @@ Wear.prototype.castDate = function(displayDate){
 }
 
 function Uchida_Test(){
-  var wear = new Wear();
-  wear.getImageUrl("men", new Date(2017, 8, 10), 44, 1);
+//  var wear = new Wear();
+//  wear.getImageUrl("men", new Date(2017, 8, 10), 44, 1);
+  var dropbox = new Dropbox("http://cdn.wimg.jp/coordinate/yxxlxo/20170930132439595/20170930132439595_500.jpg");
+  var d = dropbox.download();
+  Logger.log(dropbox.upload());
+//  Logger.log(dropbox.finish());
 }
