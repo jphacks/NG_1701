@@ -336,13 +336,16 @@ function pushTriggerData(userid){
 
   var weburl = new Array(3);
   var imageurl = new Array(3);
-  weburl[0] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
-  imageurl[0]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
-  weburl[1] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
-  imageurl[1]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
-  weburl[2] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
-  imageurl[2]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
+  var wear = new Wear();
+  var link = wear.getUrlJsons(10,5,"曇り","晴れ","men");
+  weburl[0] = link[0].link;
+  imageurl[0]= link[0].imgUrl;
+  weburl[1] = link[1].link;
+  imageurl[1]= link[1].imgUrl;
+  weburl[2] = link[2].link;
+  imageurl[2]= link[2].imgUrl;
   push.pushCarousel(weburl,imageurl,"今日の服装をお知らせします",userid);
+
 }
 
 //テスト関数
