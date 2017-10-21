@@ -6,6 +6,7 @@ var Wear = function () {
 }
 
 Wear.prototype.getImageUrl = function(gender, date, region){
+  var index = 0;
   var url = "http://wear.jp/" + gender + "-coordinate/?country_id=1" + "&region_id=" + region + "&type_id=2";
   var response = UrlFetchApp.fetch(url).getContentText();
   var doc = Xml.parse(response, true);
@@ -13,9 +14,13 @@ Wear.prototype.getImageUrl = function(gender, date, region){
   doc = XmlService.parse(bodyHtml);
   var root = doc.getRootElement()
   var list = parser.getElementById(root, 'main_list');
-  var div = list.getChildren('ul')[0].getChildren('li')[0].getChildren('div')[0];
+  var div = list.getChildren('ul')[0].getChildren('li')[index].getChildren('div')[0];
+  var link = "http://wear.jp" + div.getChild('a').getAttribute('href').getValue();
+  Logger.log(link);
   var img = div.getChildren('p')[0].getChild('img');
-  Logger.log(img.getAttribute('data-original').getValue());
+  var imgUrl = img.getAttribute('data-original').getValue();
+  Logger.log(imgUrl);
+  return [imgUrl, link];
 }
 
 function Uchida_Test(){
