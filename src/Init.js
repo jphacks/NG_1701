@@ -96,8 +96,10 @@ Init.prototype.Setting = function (e) {
 
         this.LocationSetting(e);
 
-    } else if (this.database.GetValue(this.userId, "location").length != 5) {
+    } else if (String(this.database.GetValue(this.userId, "location")).length != 4) {
         this.LocationSetting(e);
+    } else if (this.database.GetValue(this.userId, "time") == "") {
+        this.TimeSetting(e);
     }
 };
 
@@ -382,6 +384,8 @@ Init.prototype.LocationSetting = function (e) {
         switch (e.message.text) {
         case "名古屋市":
             this.database.SetValue(this.userId, "location", 1301);
+            this.LocationSetting(e);
+            return;
             break;
         default:
             var postData = {
@@ -464,17 +468,101 @@ Init.prototype.LocationSetting = function (e) {
             return;
             break;
         }
+        return;
         break;
-        /*default:
-                this.database.SetValue(this.userId, "gender", "");
-                this.StartSetting(e);
-                return;
-                break;*/
+    case 4:
+        this.TimeSetting(e);
+        break;
+    default:
+        this.database.SetValue(this.userId, "gender", "");
+        this.StartSetting(e);
+        return;
+        break;
     }
 
-    this.FinishSetting(e);
+    //this.FinishSetting(e);
 
 };
+
+Init.prototype.TimeSetting = function (e) {
+    if (isFinite(e.message.text.slice(0, -3))) {
+        this.database.SetValue(this.userId, "time", Number(e.message.text.slice(0, -3)));
+        this.FinishSetting(e);
+    } else {
+        var postData = {
+            "replyToken": e.replyToken,
+            "messages": [
+                {
+                    "type": "text",
+                    "text": "通知してほしい時間を教えてください"
+            },
+                {
+                    "type": "imagemap",
+                    "baseUrl": "https://dl.dropboxusercontent.com/s/rhsm7w5tler9i3o/time.jpg",
+                    "altText": "時間を選択してください",
+                    "baseSize": {
+                        "width": 1040,
+                        "height": 1040
+                    },
+                    "actions": [
+                        {
+                            "type": "message",
+                            "text": "6:00",
+                            "area": {
+                                "x": 34,
+                                "y": 28,
+                                "width": 975,
+                                "height": 218
+                            }
+                    },
+                        {
+                            "type": "message",
+                            "text": "7:00",
+                            "area": {
+                                "x": 34,
+                                "y": 284,
+                                "width": 975,
+                                "height": 218
+                            }
+                    },
+                        {
+                            "type": "message",
+                            "text": "8:00",
+                            "area": {
+                                "x": 34,
+                                "y": 538,
+                                "width": 975,
+                                "height": 218
+                            }
+                    },
+                        {
+                            "type": "message",
+                            "text": "9:00",
+                            "area": {
+                                "x": 34,
+                                "y": 793,
+                                "width": 975,
+                                "height": 218
+                            }
+                    }
+                ]
+            }
+        ]
+        };
+
+
+        var options = {
+            "method": "post",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
+            },
+            "payload": JSON.stringify(postData)
+        };
+
+        UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+    }
+}
 
 Init.prototype.FinishSetting = function (e) {
     this.database.SetValue(this.userId, "flag", "");
