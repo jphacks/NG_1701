@@ -1,4 +1,4 @@
-# サンプル（プロダクト名）
+﻿# サンプル（プロダクト名）
 
 [![Product Name](https://raw.github.com/GabLeRoux/WebMole/master/ressources/WebMole_Youtube_Video.png)](https://www.youtube.com/channel/UC4PtjOfZTbVp9DwtJv82Lzg)
 
@@ -27,9 +27,10 @@
 今日の服装を選ぶのに必要な情報ををプッシュ通知でわかりやすい文章で表示
 
 #### 3. 特長3
+スマホアプリ「ライン」を使うことでユーザーとインタラクティブに対話
 
 ### 解決出来ること
-この製品を利用することによって最終的に解決できることについて記載をしてください。
+
 
 ### 今後の展望
 今回は実現できなかったが、今後改善すること、どのように展開していくことが可能かについて記載をしてください。
