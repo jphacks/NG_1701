@@ -6,6 +6,24 @@ var Push = function () {
   this.url = "https://api.line.me/v2/bot/message/push";
 };
 
+//postdataをもらって送る
+Push.prototype.pushData = function(PostData){
+  var headers = {
+  "Content-Type" : "application/json; charset=UTF-8",
+  'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN,
+  };
+
+var postData = PostData;
+
+var options = {
+  "method" : "post",
+  "headers" : headers,
+  "payload" : JSON.stringify(postData)
+};
+
+return UrlFetchApp.fetch(this.url, options);
+}
+
 Push.prototype.pushtext = function(text){
   var headers = {
   "Content-Type" : "application/json; charset=UTF-8",
@@ -30,6 +48,46 @@ var options = {
 
 return UrlFetchApp.fetch(this.url, options);
 }
+
+//templateの作成
+Push.prototype.maketemplate = function(imageurl){
+  var template = {
+      "type": "buttons",
+      "thumbnailImageUrl": imageurl,
+      "title": "Menu",
+      "text": "Please select",
+      "actions": [
+          {
+            "type": "postback",
+            "label": "Buy",
+            "data": "action=buy&itemid=123"
+          },
+          {
+            "type": "postback",
+            "label": "Add to cart",
+            "data": "action=add&itemid=123"
+          },
+          {
+            "type": "uri",
+            "label": "View detail",
+            "uri": imgaeurl
+          }
+      ]
+    }
+    return template;
+}
+
+//template message を送る
+Push.prototype.pushtemplate = function(altText ,url){
+  var template = this.maketemplate(url);
+  var postData = {
+  "type": "template",
+  "altText": altText,
+  "template": template
+    }
+  this.pushData(postData);
+}
+
 
 //気温湿度などのデータ取得クラス
 var GetWeatherData = function(){
@@ -107,7 +165,7 @@ GetWeatherData.prototype.Todaytemp = function(json){
 var Indexinfo = function(){
 };
 //不快指数の計算
-indexinfo.prototype.discomfort = function(list){
+Indexinfo.prototype.discomfort = function(list){
   //[0]朝[1]昼[2]夜
   var discomlist = new Array(3);
   for (var i=0;i<3;i++){
@@ -128,9 +186,13 @@ function testshoi(){
   var weather = getweatherdata.GetWeather(36,136);
   var todayweather = getweatherdata.Todaytemp(weather);
   var discomindex = indexinfo.discomfort(todayweather);
-  for(var i=0;i<3;i++){
-    push.pushtext(discomindex[i]);
-  }
+  push.pushtext(discomindex[0]);
+  //push.pushtemplate("https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E","A");
+}
+
+function testshoi2(){
+  var push = new Push();
+  push.pushtext("A");
 }
 
 //<クラス名>.prototype.<メソッド名>  = function(引数){中身};
