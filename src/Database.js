@@ -1,6 +1,5 @@
 var Database = function () {
-    this.sheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getActiveSheet();
-    //var c = this.GetValueByCell(1, 1);
+    this.sheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[0];
 };
 
 //userの追加
