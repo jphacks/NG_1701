@@ -64,10 +64,14 @@ this.pushData(postData);
 }
 
 //carouselを送る
-Push.prototype.pushCarousel = function(weburl,imageurl,title,body,altText){
-    var actions = this.makeActions(weburl);
-    var column = this.makeColumnforCarousel(imageurl,title,body,actions);
-    var template = this.makeCarouselTemplate([column]);
+Push.prototype.pushCarousel = function(weburl,imageurl,altText){
+  var columns = new Array(weburl.length);
+  for (var i=0;i<weburl.length;i++){
+    var actions = this.makeActions(weburl[i]);
+    var column = this.makeColumnforCarousel(imageurl[i],actions);
+    columns[i] = column;
+  }
+    var template = this.makeCarouselTemplate(columns);
     var postdata = this.makeTemplatePostData(altText,template);
     this.pushData(postdata);
 }
@@ -90,30 +94,29 @@ Push.prototype.makeTemplatePostData = function(altText,template){
 //templateを作る
 Push.prototype.makeCarouselTemplate = function(columns){
   var template = {
-    'type':'carousel',
+    'type':'image_carousel',
     'columns':columns
   };
   return template;
 }
 
-Push.prototype.makeColumnforCarousel = function(imageurl,title,body,actions){
+Push.prototype.makeColumnforCarousel = function(imageurl,actions){
   var column = {
-    'thumbnailImageUrl':imageurl,
-    'title':title,
-    'text':body,
-    'actions':actions
+    'imageUrl':imageurl,
+    //'title':title,
+    //'text':body,
+    'action':actions
   };
   return column;
 }
 
 Push.prototype.makeActions = function(Url){
-  var actions = [
+  var actions =
     {
       "type":"uri",
       "label":"Open Browser",
       "uri":Url
-    }
-  ];
+    };
   return actions;
 }
 
@@ -215,7 +218,13 @@ function testshoi(){
   var todayweather = getweatherdata.Todaytemp(weather);
   var discomindex = indexinfo.discomfort(todayweather);
   push.pushtext2(discomindex[2]);
-  push.pushCarousel("https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E","https://dl.dropboxusercontent.com/s/44q04ftlnbg5q09/gender.jpg","title","body","altText");
+  var weburl = new Array(2);
+  var imageurl = new Array(2);
+  weburl[0] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
+  imageurl[0]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
+  weburl[1] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
+  imageurl[1]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
+  push.pushCarousel(weburl,imageurl,"alttext");
 }
 
 
