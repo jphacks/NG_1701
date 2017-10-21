@@ -33,10 +33,13 @@ return UrlFetchApp.fetch(this.url, options);
 
 //気温湿度などのデータ取得クラス
 var GetWeatherData = function(){
+
+};
+
 //OpenWeatherMapAPIから情報を取得
-GetWeatherData.prototype.GetWeather(lat,lon) {
+GetWeatherData.prototype.GetWeather = function(lat,lon) {
   var API_KEY="9d287aeaef7ecc9dae9837a2d2f96934";
-  var url="http://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+lon+"&APPID="+API_KEY+"&lang=ja&cnt=12&units=metric";
+  var url="http://api.openweathermap.org/data/2.5/forecast?lat="+35+"&lon="+139+"&APPID="+API_KEY+"&type=hour&cnt=12&units=metric";
   var responce=UrlFetchApp.fetch(url);
   //return responce.getContentText();
   var json=JSON.parse(responce.getContentText());
@@ -45,7 +48,7 @@ GetWeatherData.prototype.GetWeather(lat,lon) {
 }
 
 //送信用にデータを変更
-GetWeatherData.prototype.Layout(json){
+GetWeatherData.prototype.Layout = function(json){
   var location="場所:"+json.city.name;
   var cnt=Number(json.cnt);
   var list=new Array(cnt);
@@ -56,10 +59,9 @@ GetWeatherData.prototype.Layout(json){
     list[i][1]="天気:"+json.list[i].weather[0]["description"];
     list[i][2]="最高気温:"+json.list[i].main.temp_max+"℃";
     list[i][3]="最低気温:"+json.list[i].main.temp_min+"℃";
-    list[i][4]="平均気温"+json.list[i].main.temp;
+    list[i][4]="平均気温"+json.list[i].temp;
     list[i][5]="湿度"+json.list[i].main.humidity;
   }
-
 
   var result=location+"\n";
   for(var i=0;i<cnt;i++){
@@ -70,13 +72,48 @@ GetWeatherData.prototype.Layout(json){
   }
   return result;
 }
-}
 
+//気候データから、今日の朝昼夜の気温と湿度を配列で返す
+GetWeatherData.prototype.Todaytemp = function(json){
+    //[その時間からいくつ目の３時間ごとのデータか][データ番号]
+    //データ番号 0~2 朝昼夜気温 3~5 朝昼夜湿度
+    var weatherlist = new Array(6);
+    var cnt=Number(json.cnt);
+    var list=new Array(cnt);
+    var firstdate=new Date(Number(json.list[0].dt)*1000);
+    //初期化
+    for(var i=0;i<cnt;i++){
+      weatherlist[i]=100;
+    }
+    for(var i=0;i<cnt;i++){
+      var date=new Date(Number(json.list[i].dt)*1000);
+      if(date.getDate()==firstdate.getDate() && date.getHours() == 6){
+        weatherlist[0]=json.list[i].main.temp;
+        weatherlist[3]=json.list[i].main.humidity;
+      }
+      if(date.getDate()==firstdate.getDate() && date.getHours() == 12){
+        weatherlist[1]=json.list[i].main.temp;
+        weatherlist[4]=json.list[i].main.humidity;
+      }
+      if(date.getDate()==firstdate.getDate() && date.getHours() == 21){
+        weatherlist[2]=json.list[i].main.temp;
+        weatherlist[5]=json.list[i].main.humidity;
+      }
+    }
+    return weatherlist;
+  }
+
+//不快指数や過去のデータ
+
+//テスト関数
 function testshoi(){
   var push = new Push();
-  var weather = GetWeatherData.GetWeather(36,136);
-  weather = GetWeatherData.Layout(weather);
-  push.pushtext(weather);
+  var getweatherdata = new GetWeatherData();
+  var weather = getweatherdata.GetWeather(36,136);
+  var todayweather = getweatherdata.Todaytemp(weather);
+  for(var i=0;i<6;i++){
+    push.pushtext(todayweather[i]);
+  }
 }
 
 //<クラス名>.prototype.<メソッド名>  = function(引数){中身};
