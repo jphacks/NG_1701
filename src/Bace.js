@@ -15,8 +15,8 @@ function doPost(e) {
     var events = JSON.parse(e.postData.contents).events;
     events.forEach(function (event) {
         if (event.type == "message") {
-            var init = new Init();
-            init.StartSetting(event);
+            //var init = new Init();
+            //init.StartSetting(event);
 
         } else if (event.type == "follow") {
             var init = new Init(event);
