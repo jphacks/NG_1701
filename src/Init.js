@@ -29,7 +29,7 @@ Init.prototype.StartSetting = function (e) {
             },
             {
                 "type": "text",
-                "text": "性別を教えてください"
+                "text": "性別を選択してください"
             },
             {
                 "type": "imagemap",
@@ -118,7 +118,7 @@ Init.prototype.LocationSetting = function (e) {
                 "messages": [
                     {
                         "type": "text",
-                        "text": "地域を教えてください"
+                        "text": "地域を選択してください"
                     },
                     {
                         "type": "imagemap",
@@ -213,7 +213,7 @@ Init.prototype.LocationSetting = function (e) {
                 "messages": [
                     {
                         "type": "imagemap",
-                        "baseUrl": "https://dl.dropboxusercontent.com/s/s1yjxwncd7dcxn9/honshu.jpg",
+                        "baseUrl": "https://dl.dropboxusercontent.com/s/uazmk9iigcxpwbm/honshu.jpg",
                         "altText": "地域を選択してください",
                         "baseSize": {
                             "width": 1040,
@@ -313,7 +313,7 @@ Init.prototype.LocationSetting = function (e) {
                 "messages": [
                     {
                         "type": "imagemap",
-                        "baseUrl": "https://dl.dropboxusercontent.com/s/me0gctu7kj7v9g5/tokai.jpg",
+                        "baseUrl": "https://dl.dropboxusercontent.com/s/9lopof5cur1b17d/tokai.jpg",
                         "altText": "地域を選択してください",
                         "baseSize": {
                             "width": 1040,
@@ -393,7 +393,7 @@ Init.prototype.LocationSetting = function (e) {
                 "messages": [
                     {
                         "type": "imagemap",
-                        "baseUrl": "https://dl.dropboxusercontent.com/s/s646q2w7aubvbqn/aichi.jpg",
+                        "baseUrl": "https://dl.dropboxusercontent.com/s/aj9pm9jgnbcraa7/aichi.jpg",
                         "altText": "地域を選択してください",
                         "baseSize": {
                             "width": 1040,
@@ -405,7 +405,7 @@ Init.prototype.LocationSetting = function (e) {
                                 "text": "尾張地方",
                                 "area": {
                                     "x": 24,
-                                    "y": 108,
+                                    "y": 198,
                                     "width": 426,
                                     "height": 266
                                 }
@@ -415,7 +415,7 @@ Init.prototype.LocationSetting = function (e) {
                                 "text": "名古屋市",
                                 "area": {
                                     "x": 186,
-                                    "y": 387,
+                                    "y": 477,
                                     "width": 266,
                                     "height": 266
                                 }
@@ -425,7 +425,7 @@ Init.prototype.LocationSetting = function (e) {
                                 "text": "知多",
                                 "area": {
                                     "x": 186,
-                                    "y": 665,
+                                    "y": 755,
                                     "width": 266,
                                     "height": 266
                                 }
@@ -435,7 +435,7 @@ Init.prototype.LocationSetting = function (e) {
                                 "text": "西三河",
                                 "area": {
                                     "x": 468,
-                                    "y": 108,
+                                    "y": 198,
                                     "width": 265,
                                     "height": 540
                                 }
@@ -445,7 +445,7 @@ Init.prototype.LocationSetting = function (e) {
                                 "text": "東三河",
                                 "area": {
                                     "x": 751,
-                                    "y": 108,
+                                    "y": 198,
                                     "width": 266,
                                     "height": 817
                                 }
@@ -494,7 +494,7 @@ Init.prototype.TimeSetting = function (e) {
             "messages": [
                 {
                     "type": "text",
-                    "text": "通知してほしい時間を教えてください"
+                    "text": "通知してほしい時間を選択してください"
             },
                 {
                     "type": "imagemap",
