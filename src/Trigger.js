@@ -1,3 +1,4 @@
+//トリガーのセット。いろいろ完成したらこれだけ毎日夜中に実行。自身をトリガー設定すること！
 function setTrigger() {
     deleteTrigger();
     var userDatabase = new Database();
@@ -26,35 +27,42 @@ function setTrigger() {
     });
 }
 
+//トリガーで実行される関数。
 function PushByTime() {
     var pushSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[1];
     var col = 2;
-    var headers = {
-        "Content-Type": "application/json; charset=UTF-8",
-        'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN,
-    };
     while (pushSheet.getRange(1, col).getValue() != "") {
         var userId = pushSheet.getRange(1, col).getValue();
-        var postData = {
-            "to": userId,
-            "messages": [
-                {
-                    'type': 'text',
-                    'text': "時間やで",
-                }
-            ]
-        };
-        var options = {
-            "method": "post",
-            "headers": headers,
-            "payload": JSON.stringify(postData)
-        };
-        UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", options);
+        TestOfTriggerPush(userId); //userIdを引数とする関数をここにセット
         col++;
     }
     pushSheet.deleteRow(1);
 }
 
+//テスト用関数。本番は削除予定。
+function TestOfTriggerPush(userId) {
+    var headers = {
+        "Content-Type": "application/json; charset=UTF-8",
+        'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN,
+    };
+    var postData = {
+        "to": userId,
+        "messages": [
+            {
+                'type': 'text',
+                'text': "時間やで",
+                }
+            ]
+    };
+    var options = {
+        "method": "post",
+        "headers": headers,
+        "payload": JSON.stringify(postData)
+    };
+    UrlFetchApp.fetch("https://api.line.me/v2/bot/message/push", options);
+}
+
+//トリガーを全削除する関数
 function deleteTrigger() {
     var triggers = ScriptApp.getProjectTriggers();
     for (var i = 0; i < triggers.length; i++) {

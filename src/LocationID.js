@@ -1,3 +1,4 @@
+//locationの番号を基にした場所の名前
 var LOCATION_ID = {
     "0": "Sapporo-shi",
     "1": {
