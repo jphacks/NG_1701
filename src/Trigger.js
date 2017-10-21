@@ -7,7 +7,8 @@ function setTrigger() {
     var low = 2;
     while (userDatabase.GetValueByCell(low, 1) != "") {
         var userId = userDatabase.GetValueByCell(low, 1);
-        var timeLow = timelist.indexOf(userDatabase.GetValue(userId, "time"));
+        var hour = userDatabase.GetValue(userId, "time");
+        var timeLow = timelist.indexOf(hour);
         if (timeLow >= 0) {
             var timeCol = 2;
             while (pushSheet.getRange(timeLow + 1, timeCol).getValue() != "") {
@@ -15,9 +16,20 @@ function setTrigger() {
             }
             pushSheet.getRange(timeLow + 1, timeCol).setValue(userId);
         } else if (timeLow == -1) {
-            timelist.push(userDatabase.GetValue(userId, "time"));
-            pushSheet.getRange(timelist.length, 1).setValue(timelist[timelist.length - 1]);
-            pushSheet.getRange(timelist.length, 2).setValue(userId);
+            var index = 0;
+            for (var i = 0; i < timelist.length; i++) {
+                if (timelist[index] > hour) {
+                    timelist.splice(index, 0, hour);
+                    pushSheet.insertRowBefore(index + 1);
+                    break;
+                }
+                index++;
+            }
+            if (timelist.indexOf(hour) == -1) {
+                timelist.push(hour);
+            }
+            pushSheet.getRange(index + 1, 1).setValue(timelist[index]);
+            pushSheet.getRange(index + 1, 2).setValue(userId);
         }
         low++;
     }
@@ -33,7 +45,7 @@ function PushByTime() {
     var col = 2;
     while (pushSheet.getRange(1, col).getValue() != "") {
         var userId = pushSheet.getRange(1, col).getValue();
-        TestOfTriggerPush(userId); //userIdを引数とする関数をここにセット
+        pushTriggerData(userId); //userIdを引数とする関数をここにセット
         col++;
     }
     pushSheet.deleteRow(1);
