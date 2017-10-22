@@ -3,7 +3,7 @@ var Dropbox = function (imgPath) {
     this.SharedUrl = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
     this.token = 'jMtLFKY2xVAAAAAAAAAAG2VMPYdBoYJBh-B5MGwQtiuJTu1xP08DK1-5n14waUS1';
     this.imgPath = imgPath;
-    //this.imgTitle = this.imgPath.substring(this.imgPath.lastIndexOf("/"));
+    this.imgTitle = this.imgPath.substring(this.imgPath.lastIndexOf("/")).slice(1);
     this.filename = "test.jpg";
     this.file;
 
@@ -34,7 +34,7 @@ Dropbox.prototype = {
         this.file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
         var parameters = {
-            "path": "/imgSrc/" + num + this.filename,
+            "path": "/imgSrc/" + num + this.imgTitle,
             "url": "https://drive.google.com/uc?export=download&id=" + this.file.getId()
         };
 
@@ -56,7 +56,7 @@ Dropbox.prototype = {
         DriveApp.removeFile(this.file);
 
         var shareParameters = {
-            "path": "/imgSrc/" + num + this.filename,
+            "path": "/imgSrc/" + num + this.imgTitle,
             "settings": {
                 "requested_visibility": "public"
             }
