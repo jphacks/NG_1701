@@ -1,7 +1,7 @@
 
 # ModerateClothes
 
-[![Product Name](thumbnail)](https://youtu.be/l51pYL7iX4g)
+[![Product Name](thumbnail.png)](https://youtu.be/l51pYL7iX4g)
 
 ## 製品概要
 ### Cloth(服) × Tech
