@@ -172,7 +172,7 @@ var GetWeatherData = function(){
 //OpenWeatherMapAPIから情報を取得
 GetWeatherData.prototype.GetWeather = function(place) {
   var API_KEY="9d287aeaef7ecc9dae9837a2d2f96934";
-  var url="http://api.openweathermap.org/data/2.5/forecast?q="+place+",jp&APPID="+API_KEY+"&lang=ja&type=hour&cnt=12&units=metric";
+  var url="http://api.openweathermap.org/data/2.5/forecast?q="+place+",jp&APPID="+API_KEY+"&lang=ja&type=hour&cnt=8&units=metric";
   var responce=UrlFetchApp.fetch(url);
   //return responce.getContentText();
   var json=JSON.parse(responce.getContentText());
@@ -220,17 +220,17 @@ GetWeatherData.prototype.Todaytemp = function(json){
     }
     for(var i=0;i<cnt;i++){
       var date=new Date(Number(json.list[i].dt)*1000);
-      if(date.getDate()==firstdate.getDate() && date.getHours() == 9){
+      if(date.getHours() == 9){
         weatherlist[0]=json.list[i].main.temp_min;
         weatherlist[3]=json.list[i].main.humidity;
         weatherlist[6]=json.list[i].weather[0].description;
       }
-      if(date.getDate()==firstdate.getDate() && date.getHours() == 12){
+      if(date.getHours() == 12){
         weatherlist[1]=json.list[i].main.temp;
         weatherlist[4]=json.list[i].main.humidity;
         weatherlist[7]=json.list[i].weather[0].description;
       }
-      if(date.getDate()==firstdate.getDate() && date.getHours() == 21){
+      if(date.getHours() == 21){
         weatherlist[2]=json.list[i].main.temp;
         weatherlist[5]=json.list[i].main.humidity;
       }
@@ -469,11 +469,11 @@ function pushTriggerData(userid){
   var discomindex = indexinfo.discomfort(todayweather);
   var atugido = indexinfo.atugido(discomindex);
   var text = makematerial.makeText(atugido);
-  push.pushtext2(text,userid);
   /*
   var tempchangeurl = makematerial.TempChange(atugido);
   push.pushImageMap(userid,tempchangeurl);
   */
+  push.pushtext2(text,userid);
   var maxmintemp = getweatherdata.MaxMinTemp(todayweather);
   var weathers = getweatherdata.Weathers(todayweather);
   var weburl = new Array();
