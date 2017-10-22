@@ -4,7 +4,43 @@ var Goo = function () {
 }
 
 Goo.prototype = {
-  getDate : function(date){
+  getFitDate : function(highTmp, lowTmp, amW, pmW, array){
+    amW = this.castWeatherString(amW);
+    pmW = this.castWeatherString(pmW);
+    Logger.log(amW + " " + pmW);
+
+    var newArray = [];
+    for (var i = 0; i < array.length; i++){
+      if(Math.abs(array[i].hT - highTmp) < 2 && Math.abs(array[i].lT - lowTmp) < 2)
+      {
+        var item = {
+          "y" : parseInt(array[i].y),
+          "m" : parseInt(array[i].m),
+          "d" : parseInt(array[i].d)
+        }
+        newArray.push(item);
+      }
+    }
+    Logger.log("*******************");
+    Logger.log(newArray);
+    return newArray;
+  },
+  castWeatherString : function(weather){
+    if(weather.match(/雨/)){
+      return "雨";
+    } else if(weather.match(/晴/)){
+      return "晴れ";
+    } else if(weather.match(/曇/) || weather.match(/雲/)){
+      return "曇";
+    } else {
+      return "";
+    }
+  },
+  getWeatherInfo : function(){
+    var today = new Date();
+    return this.getWeatherInfoFromDate(new Date(today.getYear(), today.getMonth()-1, today.getDate())).concat(this.getWeatherInfoFromDate(today));
+  },
+  getWeatherInfoFromDate : function(date){
     var m = date.getMonth()+1;
     if(m < 10) m = '0' + m;
     var url = this.gooUrl + date.getYear() + m + '00/';
