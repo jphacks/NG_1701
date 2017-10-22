@@ -451,7 +451,7 @@ function testshoi2(){
 }
 
 function DEMO(){
-  var userid = "Ub2afb72bc67d5d5d1b264bac6f7bb90b";
+  var userid = "Uc5376a7a0a6a3ed5c8a6d6baf73220c7";
   var push = new Push();
   var database = new Database();
   var getweatherdata = new GetWeatherData();
@@ -459,9 +459,9 @@ function DEMO(){
   var makematerial = new makeMaterial();
   //var weather = getweatherdata.GetWeather(GetLocationName(database.GetValue(userid,"location")));
   //var todayweather = getweatherdata.Todaytemp(weather);
-  var todayweather = [14.6,16.6,14,94,84,93,"雨","曇"];
+  //var todayweather = [14.6,16.6,14,94,84,93,"雨","曇"];
   //var todayweather = [16.5,19.7,16.9,51,50,82,"雨","曇"];
-  //var todayweather = [13.4,15.5,15.2,92,91,90,"雨","曇"];
+  var todayweather = [13.4,15.5,15.2,92,91,90,"雨","曇"];
   var discomindex = indexinfo.discomfort(todayweather);
   var atugido = indexinfo.atugido(discomindex);
   var text = makematerial.makeText(atugido);
