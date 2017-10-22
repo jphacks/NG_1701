@@ -6,6 +6,7 @@ var Dropbox = function (imgPath) {
     this.imgTitle = this.imgPath.substring(this.imgPath.lastIndexOf("/")).slice(1);
     this.filename = "test.jpg";
     this.file;
+    this.fileid;
 
     //  this.url2 = "https://content.dropboxapi.com/2/files/upload_session/finish";
 };
@@ -40,9 +41,10 @@ Dropbox.prototype = {
         var fileBlob = UrlFetchApp.fetch(this.imgPath).getBlob().setName(this.filename);
         this.file = DriveApp.createFile(fileBlob);
         this.file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        this.fileid=this.file.getId();
 
         var parameters = {
-            "path": "/imgSrc/" + num + this.imgTitle,
+            "path": "/imgSrc/" + num + this.fileid + this.imgTitle,
             "url": "https://drive.google.com/uc?export=download&id=" + this.file.getId()
         };
 
@@ -64,7 +66,7 @@ Dropbox.prototype = {
         DriveApp.removeFile(this.file);
 
         var shareParameters = {
-            "path": "/imgSrc/" + num + this.imgTitle,
+            "path": "/imgSrc/" + num + this.fileid + this.imgTitle,
             "settings": {
                 "requested_visibility": "public"
             }
