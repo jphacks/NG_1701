@@ -13,7 +13,12 @@ Goo.prototype = {
     for (var i = 0; i < array.length; i++){
       if(Math.abs(array[i].hT - highTmp) < 2 && Math.abs(array[i].lT - lowTmp) < 2)
       {
-        newArray.push(array[i]);
+        var item = {
+          "y" : parseInt(array[i].y),
+          "m" : parseInt(array[i].m),
+          "d" : parseInt(array[i].d)
+        }
+        newArray.push(item);
       }
     }
     Logger.log("*******************");
