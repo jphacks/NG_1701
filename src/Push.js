@@ -458,6 +458,7 @@ makeMaterial.prototype.TempChange = function(atugido){
   }
 }
 
+//トリガーで呼ばれる
 function pushTriggerData(userid){
   var push = new Push();
   var database = new Database();
@@ -473,7 +474,6 @@ function pushTriggerData(userid){
   var tempchangeurl = makematerial.TempChange(atugido);
   push.pushImageMap(userid,tempchangeurl);
   */
-  push.pushtext2(text,userid);
   var maxmintemp = getweatherdata.MaxMinTemp(todayweather);
   var weathers = getweatherdata.Weathers(todayweather);
   var weburl = new Array();
@@ -484,6 +484,7 @@ function pushTriggerData(userid){
    weburl.push(link[i].link);
    imageurl.push(link[i].imgUrl);
   }
+  push.pushtext2(text,userid);
   if(weburl.length > 0){
     push.pushtext2("★☆参考コーディネート☆★",userid);
     push.pushCarousel(weburl,imageurl,"参考画像一覧",userid);
