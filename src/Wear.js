@@ -93,6 +93,10 @@ Wear.prototype.castDate = function(displayDate){
 }
 
 function Uchida_Test(){
-  var wear = new Wear();
-  wear.getImageUrl("men", new Date(2017, 8, 10), 44, 1);
+//  var wear = new Wear();
+//  wear.getImageUrl("men", new Date(2017, 8, 10), 44, 1);
+  var dropbox = new Dropbox("http://cdn.wimg.jp/coordinate/yxxlxo/20170930132439595/20170930132439595_500.jpg");
+  var d = dropbox.download();
+  Logger.log(dropbox.upload());
+//  Logger.log(dropbox.finish());
 }
