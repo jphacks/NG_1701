@@ -23,6 +23,20 @@ Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gender){
 
   Logger.log(this.urls);
 
+  var imgUrls = [];
+  for (var i = 0; i < this.urls.length; i++){
+    imgUrls.push(this.urls[i].imgUrl);
+  }
+
+  imgUrls = GetImageURLs(imgUrls);
+
+  for (var i = 0; i < this.urls.length; i++){
+    this.urls[i].imgUrl = imgUrls[i];
+  }
+
+  Logger.log(this.urls);
+
+  /*
   // 1d
   var response = [
     {
@@ -38,7 +52,6 @@ Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gender){
       "link" : "http://wear.jp/ar0287/11005166/"
     }
   ]
-  /*
   // 2d
   var response = [
     {
@@ -70,7 +83,7 @@ Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gender){
     }
   ]
   */
-  return response;
+  return this.urls;
 }
 
 Wear.prototype.getImageUrl = function(gender, date, region, page){
@@ -159,11 +172,5 @@ Wear.prototype.castDate = function(displayDate){
 
 function Uchida_Test(){
   var wear = new Wear();
-//  wear.getImageUrl("men", new Date(2017, 8, 10), 44, 1);
-//  var dropbox = new Dropbox("http://cdn.wimg.jp/coordinate/yxxlxo/20170930132439595/20170930132439595_500.jpg");
-//  var d = dropbox.download();
-//  Logger.log(dropbox.upload());
-//  Logger.log(dropbox.finish());
-//  var goo = new Goo();
- wear.getUrlJsons(18.3,17,"晴", "雲", "men");
+  wear.getUrlJsons(18.3,17,"晴", "雲", "men");
 }
