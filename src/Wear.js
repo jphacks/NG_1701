@@ -133,5 +133,5 @@ function Uchida_Test(){
 //  Logger.log(dropbox.upload());
 //  Logger.log(dropbox.finish());
   var goo = new Goo();
-  goo.getDate(new Date());
+  goo.getFitDate(18.3,17,"晴", "雲", goo.getWeatherInfo());
 }
