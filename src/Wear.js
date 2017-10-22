@@ -2,11 +2,27 @@
 /****** Wearから情報を取得する ******/
 /************************************************************/
 var Wear = function () {
-
+  this.region = 4; // 宮城
+  this.urls = [];
 }
 
 // しょーいが呼ぶやつ(画像とリンクのセットの配列)
-Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gener){
+Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gender){
+
+  var goo = new Goo();
+  var weatherInfo = goo.getWeatherInfo();
+  var targetDate = goo.getFitDate(highTmp, lowTmp, amWe, pmWe, weatherInfo);
+  Logger.log(targetDate);
+
+//  for (var i = 0; i < 1; i++){
+  for (var i = 0; i < targetDate.length; i++){
+    var d = new Date(targetDate[i].y, targetDate[i].m-1, targetDate[i].d);
+    this.getImageUrl(gender, d, this.region, 0);
+    if(this.urls.length >= 3) break;
+  }
+
+  Logger.log(this.urls);
+
   // 1d
   var response = [
     {
@@ -58,42 +74,58 @@ Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gener){
 }
 
 Wear.prototype.getImageUrl = function(gender, date, region, page){
-  var imgUrl = "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png";
-  var link = "http://jackhp.webcrow.jp/";
+  if (this.urls.length >= 3) return;
 
   // Wearからデータリスト（xmlで）を取得
-  var url = "http://wear.jp/" + gender + "-coordinate/?country_id=1" + "&region_id=" + region + "&type_id=2" + "&pageno=" + page;
+  var url = "http://wear.jp/" + gender + "-coordinate/?country_id=1" + "&region_id=" + region + "&type_id=2" + "&pageno=" + page + "&from_month=" + (date.getMonth()+1) + "&to_month=" + (date.getMonth()+1);
+
+  Logger.log(url);
+
   var response = UrlFetchApp.fetch(url).getContentText();
   var doc = Xml.parse(response, true);
   var bodyHtml = doc.html.body.toXmlString();
   doc = XmlService.parse(bodyHtml);
   var root = doc.getRootElement()
+
+  // 最大ページ数を取得
+  var finishFlag = false;
+  var pager = parser.getElementById(root, 'pager');
+  var maxPage = pager.getChild("ul").getChildren('li');
+  if(parseInt(maxPage[maxPage.length-1].getChild("a").getValue()) <= page) finishFlag = true;
+
   var list = parser.getElementById(root, 'main_list');
   var li = list.getChildren('ul')[0].getChildren('li');
 
   // 日付に一致したデータを取得
   var oldestDate = this.castDate(li[li.length-1].getChildren('div')[0].getChildren('p')[1].getValue());
   if(date >= new Date(oldestDate[0], oldestDate[1]-1, oldestDate[2])){
-  for(var i=0,l=li.length;i<l;i++){
-    var div = li[i].getChildren('div')[0];
-    var displayDate = div.getChildren('p')[1].getValue();
-    var castDate = this.castDate(displayDate);
+    for(var i=0,l=li.length;i<l;i++){
+      var div = li[i].getChildren('div')[0];
+      var displayDate = div.getChildren('p')[1].getValue();
+      var castDate = this.castDate(displayDate);
 
-    if (castDate[0] == date.getYear() && castDate[1] == date.getMonth()+1 && castDate[2] == date.getDate()){
-      Logger.log(displayDate);
-      Logger.log(castDate[0] + " " + castDate[1] + " " + castDate[2]);
-      link = "http://wear.jp" + div.getChild('a').getAttribute('href').getValue();
-      var img = div.getChildren('p')[0].getChild('img');
-      imgUrl = img.getAttribute('data-original').getValue();
-      break;
+      if (castDate[0] == date.getYear() && castDate[1] == date.getMonth()+1 && castDate[2] == date.getDate()){
+        var link = "http://wear.jp" + div.getChild('a').getAttribute('href').getValue();
+        var img = div.getChildren('p')[0].getChild('img');
+        var imgUrl = img.getAttribute('data-original').getValue();
+        var item = {
+          "imgUrl" : imgUrl,
+          "link" : link
+        }
+        this.urls.push(item);
+        if (this.urls.length >= 3) return;
+      }
     }
+    if(finishFlag)
+      return;
+    else
+      return this.getImageUrl(gender, date, region, page+1);
+  } else {
+    if(finishFlag)
+      return;
+    else
+      return this.getImageUrl(gender, date, region, page+1);
   }
-  Logger.log(link);
-  Logger.log(imgUrl);
-  return [imgUrl, link];
-} else {
-  return this.getImageUrl(gender, date, region, page+1);
-}
 }
 
 // Wearに表示されている日程（X時間前、X日前）
@@ -126,10 +158,12 @@ Wear.prototype.castDate = function(displayDate){
 }
 
 function Uchida_Test(){
-//  var wear = new Wear();
+  var wear = new Wear();
 //  wear.getImageUrl("men", new Date(2017, 8, 10), 44, 1);
-  var dropbox = new Dropbox("http://cdn.wimg.jp/coordinate/yxxlxo/20170930132439595/20170930132439595_500.jpg");
-  var d = dropbox.download();
-  Logger.log(dropbox.upload());
+//  var dropbox = new Dropbox("http://cdn.wimg.jp/coordinate/yxxlxo/20170930132439595/20170930132439595_500.jpg");
+//  var d = dropbox.download();
+//  Logger.log(dropbox.upload());
 //  Logger.log(dropbox.finish());
+//  var goo = new Goo();
+ wear.getUrlJsons(18.3,17,"晴", "雲", "men");
 }
