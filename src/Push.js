@@ -50,7 +50,6 @@ return UrlFetchApp.fetch(this.url, options);
 }
 
 Push.prototype.pushtext2 = function(text,userid){
-
 var postData = {
   "to" : userid,
   "messages" : [
@@ -61,6 +60,20 @@ var postData = {
   ]
 };
 this.pushData(postData);
+}
+
+Push.prototype.pushImage = function(userid){
+  var postData = {
+    "to" : userid,
+    "messages" : [
+      {
+        "type": "image",
+        "originalContentUrl": "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E",
+        "previewImageUrl": "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E"
+      }
+    ]
+  };
+  this.pushData(postData);
 }
 
 //carouselを送る
@@ -268,7 +281,7 @@ var makeMaterial = function(){
 };
 
 makeMaterial.prototype.makeText = function(atugido){
-  var text;
+  var text = "";
   var plusword0;
   var plusword1;
   var equalword;
@@ -293,51 +306,95 @@ makeMaterial.prototype.makeText = function(atugido){
     if(atugido[0]<atugido[1]){
       text = "日中になると"+plusword0;
       if(atugido[1]<atugido[2]){
-        text += "夜になるとさらに"+plusword1+"でしょう";
+        text += "夜になるとさらに"+plusword1+"でしょう。";
       }else if(atugido[1]==atugido[2]){
-        text += "夜はその気温が続くでしょう";
+        text += "夜はその気温が続くでしょう。";
       }else if(atugido[1]>atugido[2]){
-        text += "夜は"+minusword1+"でしょう";
+        text += "夜は"+minusword1+"でしょう。";
       }
     }else if(atugido[0]==atugido[1]){
       text = "日中になっても"+equalword;
       if(atugido[1]<atugido[2]){
-        text += "夜になると"+plusword1+"でしょう";
+        text += "夜になると"+plusword1+"でしょう。";
       }else if(atugido[1]==atugido[2]){
-        text += "夜はその気温が続くでしょう";
+        text += "夜はその気温が続くでしょう。";
       }else if(atugido[1]>atugido[2]){
-        text += "夜は"+minusword1+"でしょう";
+        text += "夜は"+minusword1+"でしょう。";
       }
     }else if(atugido[0]>atugido[1]){
       text = "日中になると"+minusword0;
       if(atugido[1]<atugido[2]){
-        text += "夜になると"+plusword1+"でしょう";
+        text += "夜になると"+plusword1+"でしょう。";
       }else if(atugido[1]==atugido[2]){
-        text += "夜はその気温が続くでしょう";
+        text += "夜はその気温が続くでしょう。";
       }else if(atugido[1]>atugido[2]){
-        text += "夜はさらに"+minusword1+"でしょう";
+        text += "夜はさらに"+minusword1+"でしょう。";
       }
     }
   }
-  return text;
+
+  var text2 = "";
+  //気温が下がる日
+  if((atugido[0]>atugido[1] && atugido[1]<atugido[2])
+  || (atugido[0]==atugido[1] && atugido[1]>atugido[2])
+  || (atugido[0]>atugido[1] && atugido[1]>atugido[2])
+  || (atugido[0]>atugido[1] && atugido[1]==atugido[2])){
+    if(atugido[0]>1){
+        text2 = "ですので何か羽織れるものを持っていくといいでしょう。";
+    }else{
+        text2 = "";
+    }
+  //気温が上がる日
+  }else if((atugido[0]>atugido[1] && atugido[1]<atugido[2])
+  ||(atugido[0]==atugido[1] && atugido[1]<atugido[2])
+  ||(atugido[0]<atugido[1] && atugido[1]>atugido[2])
+  ||(atugido[0]<atugido[1] && atugido[1]==atugido[2])){
+    if(atugido[0]<5){
+      text2 = "ですので脱ぎ着のできる服装で行くことをお勧めします。";
+    }else{
+      text2 = "";
+    }
+  }
+
+  var text3 = "";
+  if(atugido[0]==0){
+    text3 = "今日は厚手のコートなどが活躍する日です。";
+  }else if(atugido[0]==1){
+    text3 = "今日はセーターや厚手のパーカーが活躍する日です。";
+  }else if(atugido[0]==2){
+    text3 = "厚手のシャツを着るとちょうどいい気候です。";
+  }else if(atugido[0]==3){
+    text3 = "今日はパーカーやシャツがちょうどいい気候です。";
+  }else if(atugido[0]==4){
+    text3 = "今日は七分袖のTシャツなどがちょうどいい気候です。";
+  }else if(atugido[0]==5){
+    text3 = "今日は涼しげなシャツがちょうどいい気候です";
+  }else if(atugido[0]==6){
+    text3 = "今日はとても暑いのでTシャツ一枚で過ごせる気候です。";
+  }
+  var lasttext = text3 + text + text2;
+  return lasttext;
 }
 
 function pushTriggerData(userid){
   var push = new Push();
+  var database = new Database();
   var getweatherdata = new GetWeatherData();
   var indexinfo = new Indexinfo();
   var makematerial = new makeMaterial();
-  var weather = getweatherdata.GetWeather("Nagoya-shi");
+  var weather = getweatherdata.GetWeather(GetLocationName(database.GetValue(userid,"location")));
   var todayweather = getweatherdata.Todaytemp(weather);
   var discomindex = indexinfo.discomfort(todayweather);
   var atugido = indexinfo.atugido(discomindex);
   var text = makematerial.makeText(atugido);
   push.pushtext2(text,userid);
 
+  var maxmintemp = getweatherdata.MaxMinTemp(todayweather);
+  var weathers = getweatherdata.Weathers(todayweather);
   var weburl = new Array(3);
   var imageurl = new Array(3);
   var wear = new Wear();
-  var link = wear.getUrlJsons(10,5,"曇り","晴れ","men");
+  var link = wear.getUrlJsons(maxmintemp[0],maxmintemp[1],weathers[0],weathers[1],"men");
   weburl[0] = link[0].link;
   imageurl[0]= link[0].imgUrl;
   weburl[1] = link[1].link;
@@ -387,6 +444,11 @@ function testshoi(){
   weburl[2] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
   imageurl[2]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
   push.pushCarousel(weburl,imageurl,"今日の服装をお知らせします");
+}
+
+function testshoi2(){
+  var push = new Push();
+  push.pushImage(this.shoiUserId);
 }
 
 
