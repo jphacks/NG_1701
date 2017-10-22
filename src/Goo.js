@@ -5,9 +5,9 @@ var Goo = function () {
 
 Goo.prototype = {
   getFitDate : function(highTmp, lowTmp, amW, pmW, array){
-    amW = this.castWeatherString(amW);
-    pmW = this.castWeatherString(pmW);
-    Logger.log(amW + " " + pmW);
+//    amW = this.castWeatherString(amW);
+//    pmW = this.castWeatherString(pmW);
+//    Logger.log(amW + " " + pmW);
 
     var newArray = [];
     for (var i = 0; i < array.length; i++){
