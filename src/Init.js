@@ -82,10 +82,10 @@ Init.prototype.Setting = function (e) {
     if (this.database.GetValue(this.userId, "gender") == "") {
         switch (e.message.text) {
         case "おとこ":
-            this.database.SetValue(this.userId, "gender", "男");
+            this.database.SetValue(this.userId, "gender", "men");
             break;
         case "おんな":
-            this.database.SetValue(this.userId, "gender", "女");
+            this.database.SetValue(this.userId, "gender", "women");
             break;
         default:
             this.database.SetValue(this.userId, "gender", "");

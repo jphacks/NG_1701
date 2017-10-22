@@ -5,6 +5,58 @@ var Wear = function () {
 
 }
 
+// しょーいが呼ぶやつ(画像とリンクのセットの配列)
+Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gener){
+  // 1d
+  var response = [
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/jgvblth7jqiemjd/1-1.jpg",
+      "link" : "http://wear.jp/kadotk4/11009163/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/uj5jbn7jh348859/1-2.jpg",
+      "link" : "http://wear.jp/onealex/11007195/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/ofkcroh5yh4ho76/1-3.jpg",
+      "link" : "http://wear.jp/ar0287/11005166/"
+    }
+  ]
+  /*
+  // 2d
+  var response = [
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/461vihb2g2p4j7w/2-1.jpg",
+      "link" : "http://wear.jp/bc137/10973668/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/snlb0g2h34jp3ju/2-2.jpg",
+      "link" : "http://wear.jp/dead2zero/10799337/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/3xvns0yooqg5l4k/2-3.jpg",
+      "link" : "http://wear.jp/astrum/10976362/"
+    }
+  ]
+  // 3d
+  var response = [
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/ro0xa29avrefoig/3-1.jpg?dl=0",
+      "link" : "http://wear.jp/zawakana0225/11089246/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/nu1scfd7mp3glnu/3-2.jpg?dl=0",
+      "link" : "http://wear.jp/kazuma05/11001377/"
+    },
+    {
+      "imgUrl" : "https://dl.dropboxusercontent.com/s/ldpn64n87blnzp5/3-3.jpg?dl=0",
+      "link" : "http://wear.jp/Disney5189/10995558/"
+    }
+  ]
+  */
+  return response;
+}
+
 Wear.prototype.getImageUrl = function(gender, date, region, page){
   var imgUrl = "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png";
   var link = "http://jackhp.webcrow.jp/";
@@ -74,6 +126,12 @@ Wear.prototype.castDate = function(displayDate){
 }
 
 function Uchida_Test(){
-  var wear = new Wear();
-  wear.getImageUrl("men", new Date(2017, 8, 10), 44, 1);
+//  var wear = new Wear();
+//  wear.getImageUrl("men", new Date(2017, 8, 10), 44, 1);
+//  var dropbox = new Dropbox("http://cdn.wimg.jp/coordinate/yxxlxo/20170930132439595/20170930132439595_500.jpg");
+//  var d = dropbox.download();
+//  Logger.log(dropbox.upload());
+//  Logger.log(dropbox.finish());
+  var goo = new Goo();
+  goo.getDate(new Date());
 }
