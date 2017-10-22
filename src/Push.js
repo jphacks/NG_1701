@@ -2,7 +2,7 @@
 var channel_access_token = "3t3EIwftT+lWk8koU4wt4h3qa58c6Gmlkli8qG3fVgsDbzKFcAkqfuMOsEd6vn2sVjkCProWGFt28hY9CEaUmTbXMPxKR/ai+GsZtTMkFS2w9erpQlI/5kFTN4Cd9hCKqdj/TIe35s9arzuE/a8i4wdB04t89/1O/w1cDnyilFU=";
 
 var Push = function () {
-  this.shoiUserId = 'Ub2afb72bc67d5d5d1b264bac6f7bb90b';
+  this.shoiUserId = "Ub2afb72bc67d5d5d1b264bac6f7bb90b";
   this.url = "https://api.line.me/v2/bot/message/push";
 };
 
@@ -62,18 +62,49 @@ var postData = {
 this.pushData(postData);
 }
 
+//うまくいかない
 Push.prototype.pushImage = function(userid){
   var postData = {
     "to" : userid,
-    "messages" : [
+    "messages" :[
       {
         "type": "image",
-        "originalContentUrl": "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E",
-        "previewImageUrl": "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E"
+        "originalContentUrl": "https://dl.dropboxusercontent.com/s/pedwmdgk9u7l8tu/1-1-200.jpg",
+        "previewImageUrl": "https://dl.dropboxusercontent.com/s/pedwmdgk9u7l8tu/1-1-200.jpg",
       }
     ]
   };
   this.pushData(postData);
+}
+
+Push.prototype.pushImageMap = function(userid,url){
+  var postData = {
+    "to":userid,
+    "messages" :[
+      {
+          "type": "imagemap",
+          "baseUrl": url,
+          "altText": "今日の気温変化",
+          "baseSize": {
+              "width": 1040,
+              "height": 1040
+          },
+          "actions": [
+              {
+                  "type": "message",
+                  "text": "6:00",
+                  "area": {
+                      "x": 34,
+                      "y": 28,
+                      "width": 1,
+                      "height": 1
+                  }
+                }
+              ]
+          }
+    ]
+ }
+ this.pushData(postData);
 }
 
 //carouselを送る
@@ -376,6 +407,57 @@ makeMaterial.prototype.makeText = function(atugido){
   return lasttext;
 }
 
+//気温変化
+makeMaterial.prototype.TempChange = function(atugido){
+  var winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-1.jpg";
+  var summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-1.jpg";
+  var push = new Push();
+
+  if(atugido[0]<atugido[1] && atugido[1]<atugido[2]){
+    winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-1.jpg";
+    summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-1.jpg";
+  }
+  else if(atugido[0]==atugido[1] && atugido[1]<atugido[2]){
+    winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-2.jpg";
+    summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-2.jpg";
+  }
+  else if(atugido[0]>atugido[1] && atugido[1]<atugido[2]){
+    winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-3.jpg";
+    summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-3.jpg";
+  }
+  else if(atugido[0]<atugido[1] && atugido[1]>atugido[2]){
+    winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-4.jpg";
+    summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-4.jpg";
+  }
+  else if(atugido[0]==atugido[1] && atugido[1]>atugido[2]){
+    winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-5.jpg";
+    summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-5.jpg";
+  }
+  else if(atugido[0]<atugido[1] && atugido[1]==atugido[2]){
+    winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-6.jpg";
+    summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-6.jpg";
+  }
+  else if(atugido[0]>atugido[1] && atugido[1]>atugido[2]){
+    winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-7.jpg";
+    summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-7.jpg";
+  }
+  else if(atugido[0]==atugido[1] && atugido[1]==atugido[2]){
+    winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-8.jpg";
+    summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-8.jpg";
+  }
+  else if(atugido[0]>atugido[1] && atugido[1]==atugido[2]){
+    winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-9.jpg";
+    summerurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/2-9.jpg";
+  }
+
+  //冬
+  if(atugido[0]<4){
+    return winterurl;
+  }else{
+    return summerurl;
+  }
+}
+
 function pushTriggerData(userid){
   var push = new Push();
   var database = new Database();
@@ -388,20 +470,24 @@ function pushTriggerData(userid){
   var atugido = indexinfo.atugido(discomindex);
   var text = makematerial.makeText(atugido);
   push.pushtext2(text,userid);
-
+  /*
+  var tempchangeurl = makematerial.TempChange(atugido);
+  push.pushImageMap(userid,tempchangeurl);
+  */
   var maxmintemp = getweatherdata.MaxMinTemp(todayweather);
   var weathers = getweatherdata.Weathers(todayweather);
-  var weburl = new Array(3);
-  var imageurl = new Array(3);
+  var weburl = new Array();
+  var imageurl = new Array();
   var wear = new Wear();
   var link = wear.getUrlJsons(maxmintemp[0],maxmintemp[1],weathers[0],weathers[1],"men");
-  weburl[0] = link[0].link;
-  imageurl[0]= link[0].imgUrl;
-  weburl[1] = link[1].link;
-  imageurl[1]= link[1].imgUrl;
-  weburl[2] = link[2].link;
-  imageurl[2]= link[2].imgUrl;
-  push.pushCarousel(weburl,imageurl,"今日の服装をお知らせします",userid);
+  for (var i=0;i<link.length;i++){
+   weburl.push(link[i].link);
+   imageurl.push(link[i].imgUrl);
+  }
+  if(weburl.length > 0){
+    push.pushtext2("★☆参考コーディネート☆★",userid);
+    push.pushCarousel(weburl,imageurl,"参考画像一覧",userid);
+  }
 }
 
 //テスト関数
@@ -442,16 +528,20 @@ function testshoi(){
   imageurl[1]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
   weburl[2] = "https://drive.google.com/open?id=0B2tPxOvRhEO9TFlFRUFtQmUxS0E";
   imageurl[2]= "https://dl.dropboxusercontent.com/s/fllry948cpol7vd/20171009144615278_500.jpg";
-  push.pushCarousel(weburl,imageurl,"今日の服装をお知らせします");
+  push.pushCarousel(weburl,imageurl,"今日の参考コーディネート");
 }
 
+//テスト関数２
 function testshoi2(){
   var push = new Push();
-  push.pushImage(this.shoiUserId);
+  var makematerial = new makeMaterial();
+  push.pushtext2("A","Ub2afb72bc67d5d5d1b264bac6f7bb90b");
+  push.pushImageMap("Ub2afb72bc67d5d5d1b264bac6f7bb90b","https://dl.dropboxusercontent.com/s/pedwmdgk9u7l8tu/1-1-200.jpg");
+  makematerial.TempChange(atugido);
 }
 
 function DEMO(){
-  var userid = "Uc5376a7a0a6a3ed5c8a6d6baf73220c7";
+  var userid = "Ub2afb72bc67d5d5d1b264bac6f7bb90b";
   var push = new Push();
   var database = new Database();
   var getweatherdata = new GetWeatherData();
@@ -466,20 +556,25 @@ function DEMO(){
   var atugido = indexinfo.atugido(discomindex);
   var text = makematerial.makeText(atugido);
   push.pushtext2(text,userid);
+  /*
+  var tempchangeurl = makematerial.TempChange(atugido);
+  push.pushImageMap(userid,tempchangeurl);
+  */
 
   var maxmintemp = getweatherdata.MaxMinTemp(todayweather);
   var weathers = getweatherdata.Weathers(todayweather);
-  var weburl = new Array(3);
-  var imageurl = new Array(3);
+  var weburl = new Array();
+  var imageurl = new Array();
   var wear = new Wear();
   var link = wear.getUrlJsons(maxmintemp[0],maxmintemp[1],weathers[0],weathers[1],"men");
-  weburl[0] = link[0].link;
-  imageurl[0]= link[0].imgUrl;
-  weburl[1] = link[1].link;
-  imageurl[1]= link[1].imgUrl;
-  weburl[2] = link[2].link;
-  imageurl[2]= link[2].imgUrl;
-  push.pushCarousel(weburl,imageurl,"今日の参考コーディネート",userid);
+  for (var i=0;i<link.length;i++){
+   weburl.push(link[i].link);
+   imageurl.push(link[i].imgUrl);
+  }
+  if(weburl.length > 0){
+    push.pushtext2("★☆参考コーディネート☆★",userid);
+    push.pushCarousel(weburl,imageurl,"参考画像一覧",userid);
+  }
 }
 
 
