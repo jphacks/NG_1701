@@ -178,7 +178,7 @@ GetWeatherData.prototype.Layout = function(json){
 //気候データから、今日の朝昼夜の気温と湿度と天候を配列で返す
 GetWeatherData.prototype.Todaytemp = function(json){
     //[その時間からいくつ目の３時間ごとのデータか][データ番号]
-    //データ番号 0~2 朝昼夜気温 3~5 朝昼夜湿度
+    //データ番号 0~2 朝昼夜気温 3~5 朝昼夜湿度 6~7 天気
     var weatherlist = new Array(8);
     var cnt=Number(json.cnt);
     var list=new Array(cnt);
@@ -402,7 +402,6 @@ function pushTriggerData(userid){
   weburl[2] = link[2].link;
   imageurl[2]= link[2].imgUrl;
   push.pushCarousel(weburl,imageurl,"今日の服装をお知らせします",userid);
-
 }
 
 //テスト関数
@@ -449,6 +448,38 @@ function testshoi(){
 function testshoi2(){
   var push = new Push();
   push.pushImage(this.shoiUserId);
+}
+
+function DEMO(){
+  var userid = "Ub2afb72bc67d5d5d1b264bac6f7bb90b";
+  var push = new Push();
+  var database = new Database();
+  var getweatherdata = new GetWeatherData();
+  var indexinfo = new Indexinfo();
+  var makematerial = new makeMaterial();
+  //var weather = getweatherdata.GetWeather(GetLocationName(database.GetValue(userid,"location")));
+  //var todayweather = getweatherdata.Todaytemp(weather);
+  var todayweather = [14.6,16.6,14,94,84,93,"雨","曇"];
+  //var todayweather = [16.5,19.7,16.9,51,50,82,"雨","曇"];
+  //var todayweather = [13.4,15.5,15.2,92,91,90,"雨","曇"];
+  var discomindex = indexinfo.discomfort(todayweather);
+  var atugido = indexinfo.atugido(discomindex);
+  var text = makematerial.makeText(atugido);
+  push.pushtext2(text,userid);
+
+  var maxmintemp = getweatherdata.MaxMinTemp(todayweather);
+  var weathers = getweatherdata.Weathers(todayweather);
+  var weburl = new Array(3);
+  var imageurl = new Array(3);
+  var wear = new Wear();
+  var link = wear.getUrlJsons(maxmintemp[0],maxmintemp[1],weathers[0],weathers[1],"men");
+  weburl[0] = link[0].link;
+  imageurl[0]= link[0].imgUrl;
+  weburl[1] = link[1].link;
+  imageurl[1]= link[1].imgUrl;
+  weburl[2] = link[2].link;
+  imageurl[2]= link[2].imgUrl;
+  push.pushCarousel(weburl,imageurl,"今日の参考コーディネート",userid);
 }
 
 
