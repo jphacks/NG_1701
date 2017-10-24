@@ -38,8 +38,12 @@ function setTrigger() {
         low++;
     }
 
+    var setTime = new Date();
+
     timelist.forEach(function (timenum) {
-        ScriptApp.newTrigger("PushByTime").timeBased().atHour(timenum).everyDays(1).create();
+        setTime.setHours(timenum);
+        setTime.setMinutes(0);
+        ScriptApp.newTrigger("PushByTime").timeBased().at(setTime).create();
     });
     ScriptApp.newTrigger("setTrigger").timeBased().atHour(0).everyDays(1).create();
 }
