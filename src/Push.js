@@ -479,7 +479,8 @@ function pushTriggerData(userid){
   var weburl = new Array();
   var imageurl = new Array();
   var wear = new Wear();
-  var link = wear.getUrlJsons(maxmintemp[0],maxmintemp[1],weathers[0],weathers[1],"men");
+  var gender = database.GetValue(userid,"gender")
+  var link = wear.getUrlJsons(maxmintemp[0],maxmintemp[1],weathers[0],weathers[1],gender);
   for (var i=0;i<link.length;i++){
    weburl.push(link[i].link);
    imageurl.push(link[i].imgUrl);
