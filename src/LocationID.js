@@ -3,7 +3,26 @@ var LOCATION_ID = {
     "0": "Sapporo-shi",
     "1": {
         "0": "Sendai-shi",
-        "1": "Tokyo",
+        "1": {
+            "0": {
+                "0": "Maebashi-shi"
+            },
+            "1": {
+                "0": "Utsunomiya-shi"
+            },
+            "2": {
+                "0": "Saitama"
+            },
+            "3": {
+                "0": "Tokyo"
+            },
+            "4": {
+                "0": "Yokohama-shi"
+            },
+            "5": {
+                "0": "Chiba-shi"
+            }
+        },
         "2": "Toyama-shi",
         "3": {
             "0": {
