@@ -104,11 +104,17 @@ Init.prototype.Setting = function (e) {
 };
 
 Init.prototype.LocationSetting = function (e) {
-    switch (String(this.database.GetValue(this.userId, "location")).length) {
+    var locationId = String(this.database.GetValue(this.userId, "location"));
+    switch (locationId.length) {
         case 0:
             switch (e.message.text) {
                 case "本州":
                     this.database.SetValue(this.userId, "location", 1);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "四国":
+                    this.database.SetValue(this.userId, "location", 2);
                     this.LocationSetting(e);
                     return;
                     break;
@@ -119,7 +125,7 @@ Init.prototype.LocationSetting = function (e) {
                             {
                                 "type": "text",
                                 "text": "地域を選択してください"
-                    },
+                            },
                             {
                                 "type": "imagemap",
                                 "baseUrl": "https://dl.dropboxusercontent.com/s/y9fn50dbbqhe3mw/japan.jpg",
@@ -207,82 +213,164 @@ Init.prototype.LocationSetting = function (e) {
                     this.LocationSetting(e);
                     return;
                     break;
+                case "香川":
+                    this.database.SetValue(this.userId, "location", 2000);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "徳島":
+                    this.database.SetValue(this.userId, "location", 2100);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "愛媛":
+                    this.database.SetValue(this.userId, "location", 2200);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "高知":
+                    this.database.SetValue(this.userId, "location", 2300);
+                    this.LocationSetting(e);
+                    return;
+                    break;
                 default:
-                    var postData = {
-                        "replyToken": e.replyToken,
-                        "messages": [
-                            {
-                                "type": "imagemap",
-                                "baseUrl": "https://dl.dropboxusercontent.com/s/uazmk9iigcxpwbm/honshu.jpg",
-                                "altText": "地域を選択してください",
-                                "baseSize": {
-                                    "width": 1040,
-                                    "height": 1040
-                                },
-                                "actions": [
+                    switch (locationId.charAt(0)) {
+                        case "1":
+                            var postData = {
+                                "replyToken": e.replyToken,
+                                "messages": [
                                     {
-                                        "type": "message",
-                                        "text": "東北",
-                                        "area": {
-                                            "x": 767,
-                                            "y": 218,
-                                            "width": 250,
-                                            "height": 374
-                                        }
-                            },
-                                    {
-                                        "type": "message",
-                                        "text": "関東",
-                                        "area": {
-                                            "x": 767,
-                                            "y": 608,
-                                            "width": 250,
-                                            "height": 215
-                                        }
-                            },
-                                    {
-                                        "type": "message",
-                                        "text": "北陸",
-                                        "area": {
-                                            "x": 495,
-                                            "y": 431,
-                                            "width": 250,
-                                            "height": 161
-                                        }
-                            },
-                                    {
-                                        "type": "message",
-                                        "text": "東海",
-                                        "area": {
-                                            "x": 495,
-                                            "y": 608,
-                                            "width": 250,
-                                            "height": 215
-                                        }
-                            },
-                                    {
-                                        "type": "message",
-                                        "text": "近畿",
-                                        "area": {
-                                            "x": 295,
-                                            "y": 461,
-                                            "width": 179,
-                                            "height": 362
-                                        }
-                            },
-                                    {
-                                        "type": "message",
-                                        "text": "中国",
-                                        "area": {
-                                            "x": 24,
-                                            "y": 461,
-                                            "width": 250,
-                                            "height": 181
-                                        }
+                                        "type": "imagemap",
+                                        "baseUrl": "https://dl.dropboxusercontent.com/s/uazmk9iigcxpwbm/honshu.jpg",
+                                        "altText": "地域を選択してください",
+                                        "baseSize": {
+                                            "width": 1040,
+                                            "height": 1040
+                                        },
+                                        "actions": [
+                                            {
+                                                "type": "message",
+                                                "text": "東北",
+                                                "area": {
+                                                    "x": 767,
+                                                    "y": 218,
+                                                    "width": 250,
+                                                    "height": 374
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "関東",
+                                                "area": {
+                                                    "x": 767,
+                                                    "y": 608,
+                                                    "width": 250,
+                                                    "height": 215
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "北陸",
+                                                "area": {
+                                                    "x": 495,
+                                                    "y": 431,
+                                                    "width": 250,
+                                                    "height": 161
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "東海",
+                                                "area": {
+                                                    "x": 495,
+                                                    "y": 608,
+                                                    "width": 250,
+                                                    "height": 215
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "近畿",
+                                                "area": {
+                                                    "x": 295,
+                                                    "y": 461,
+                                                    "width": 179,
+                                                    "height": 362
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "中国",
+                                                "area": {
+                                                    "x": 24,
+                                                    "y": 461,
+                                                    "width": 250,
+                                                    "height": 181
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
-                        ]
-                    }
-                ]
+                            break;
+                        case "2":
+                            var postData = {
+                                "replyToken": e.replyToken,
+                                "messages": [
+                                    {
+                                        "type": "imagemap",
+                                        "baseUrl": "https://dl.dropboxusercontent.com/s/bb7zjpwyi05i1t9/shikoku.jpg",
+                                        "altText": "地域を選択してください",
+                                        "baseSize": {
+                                            "width": 1040,
+                                            "height": 1040
+                                        },
+                                        "actions": [
+                                            {
+                                                "type": "message",
+                                                "text": "香川",
+                                                "area": {
+                                                    "x": 595,
+                                                    "y": 263,
+                                                    "width": 424,
+                                                    "height": 258
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "徳島",
+                                                "area": {
+                                                    "x": 595,
+                                                    "y": 540,
+                                                    "width": 424,
+                                                    "height": 258
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "愛媛",
+                                                "area": {
+                                                    "x": 20,
+                                                    "y": 388,
+                                                    "width": 555,
+                                                    "height": 258
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "高知",
+                                                "area": {
+                                                    "x": 20,
+                                                    "y": 668,
+                                                    "width": 555,
+                                                    "height": 258
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                            break;
                     }
 
                     var options = {
@@ -387,6 +475,26 @@ Init.prototype.LocationSetting = function (e) {
                     this.LocationSetting(e);
                     return;
                     break;
+                case "尾張地方":
+                    this.database.SetValue(this.userId, "location", 1300);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "知多":
+                    this.database.SetValue(this.userId, "location", 1302);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "西三河":
+                    this.database.SetValue(this.userId, "location", 1303);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "東三河":
+                    this.database.SetValue(this.userId, "location", 1304);
+                    this.LocationSetting(e);
+                    return;
+                    break;
                 default:
                     var postData = {
                         "replyToken": e.replyToken,
@@ -485,7 +593,7 @@ Init.prototype.LocationSetting = function (e) {
 };
 
 Init.prototype.TimeSetting = function (e) {
-    if (isFinite(e.message.text.slice(0, -3))) {
+    if (e.message.text.match(/^\d{1,2}:00$/) && Number(e.message.text.slice(0, -3)) <= 23) {
         this.database.SetValue(this.userId, "time", Number(e.message.text.slice(0, -3)));
         this.FinishSetting(e);
     } else {
