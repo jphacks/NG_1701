@@ -52,20 +52,23 @@ function setTrigger() {
         ScriptApp.newTrigger("PushByTime").timeBased().at(setTime).create();
     });
     ScriptApp.newTrigger("setTrigger").timeBased().atHour(0).everyDays(1).create();
+    SlackLog("Finish Setting Trigger");
 }
 
 //トリガーで実行される関数。
 function PushByTime() {
     var pushSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[1];
     var col = 2;
+    var nowDate = new Date();
+    SlackLog("TriggerStart!:" + nowDate);
     while (pushSheet.getRange(1, col).getValue() != "") {
         try {
             var userId = pushSheet.getRange(1, col).getValue();
             pushTriggerData(userId); //userIdを引数とする関数をここにセット
             col++;
-            testSlack("Pushed! " + userId);
+            SlackLog("Pushed! " + userId);
         } catch (e) {
-            testSlack(e.message);
+            SlackLog(e.message);
         }
     }
     pushSheet.deleteRow(1);

@@ -1,7 +1,7 @@
-function testSlack(text) {
+function SlackLog(text) {
     var token = "xoxp-255097650355-255228759108-261242846418-7b53675f21b4c7e330236455f6514290";
-    var channel = "#qroon-test";
-    var username = "TriggerTest";
+    var channel = "#jphacks_slacklog";
+    var username = "SLACK_LOG_BOT";
 
     var postData = {
         "channel": channel,
@@ -16,5 +16,5 @@ function testSlack(text) {
 }
 
 function SlackChon() {
-    testSlack("hello slack");
+    SlackLog("hello slack");
 }
