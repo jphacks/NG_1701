@@ -81,17 +81,17 @@ Init.prototype.StartSetting = function (e) {
 Init.prototype.Setting = function (e) {
     if (this.database.GetValue(this.userId, "gender") == "") {
         switch (e.message.text) {
-        case "おとこ":
-            this.database.SetValue(this.userId, "gender", "men");
-            break;
-        case "おんな":
-            this.database.SetValue(this.userId, "gender", "women");
-            break;
-        default:
-            this.database.SetValue(this.userId, "gender", "");
-            this.StartSetting(e);
-            return;
-            break;
+            case "おとこ":
+                this.database.SetValue(this.userId, "gender", "men");
+                break;
+            case "おんな":
+                this.database.SetValue(this.userId, "gender", "women");
+                break;
+            default:
+                this.database.SetValue(this.userId, "gender", "");
+                this.StartSetting(e);
+                return;
+                break;
         }
 
         this.LocationSetting(e);
@@ -105,379 +105,379 @@ Init.prototype.Setting = function (e) {
 
 Init.prototype.LocationSetting = function (e) {
     switch (String(this.database.GetValue(this.userId, "location")).length) {
-    case 0:
-        switch (e.message.text) {
-        case "本州":
-            this.database.SetValue(this.userId, "location", 1);
-            this.LocationSetting(e);
-            return;
-            break;
-        default:
-            var postData = {
-                "replyToken": e.replyToken,
-                "messages": [
-                    {
-                        "type": "text",
-                        "text": "地域を選択してください"
+        case 0:
+            switch (e.message.text) {
+                case "本州":
+                    this.database.SetValue(this.userId, "location", 1);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                default:
+                    var postData = {
+                        "replyToken": e.replyToken,
+                        "messages": [
+                            {
+                                "type": "text",
+                                "text": "地域を選択してください"
                     },
-                    {
-                        "type": "imagemap",
-                        "baseUrl": "https://dl.dropboxusercontent.com/s/y9fn50dbbqhe3mw/japan.jpg",
-                        "altText": "地域を選択してください",
-                        "baseSize": {
-                            "width": 1040,
-                            "height": 1040
-                        },
-                        "actions": [
                             {
-                                "type": "message",
-                                "text": "北海道",
-                                "area": {
-                                    "x": 662,
-                                    "y": 34,
-                                    "width": 327,
-                                    "height": 295
-                                }
+                                "type": "imagemap",
+                                "baseUrl": "https://dl.dropboxusercontent.com/s/y9fn50dbbqhe3mw/japan.jpg",
+                                "altText": "地域を選択してください",
+                                "baseSize": {
+                                    "width": 1040,
+                                    "height": 1040
+                                },
+                                "actions": [
+                                    {
+                                        "type": "message",
+                                        "text": "北海道",
+                                        "area": {
+                                            "x": 662,
+                                            "y": 34,
+                                            "width": 327,
+                                            "height": 295
+                                        }
                             },
-                            {
-                                "type": "message",
-                                "text": "本州",
-                                "area": {
-                                    "x": 696,
-                                    "y": 357,
-                                    "width": 261,
-                                    "height": 423
-                                }
+                                    {
+                                        "type": "message",
+                                        "text": "本州",
+                                        "area": {
+                                            "x": 696,
+                                            "y": 357,
+                                            "width": 261,
+                                            "height": 423
+                                        }
                             },
-                            {
-                                "type": "message",
-                                "text": "本州",
-                                "area": {
-                                    "x": 333,
-                                    "y": 553,
-                                    "width": 625,
-                                    "height": 227
-                                }
+                                    {
+                                        "type": "message",
+                                        "text": "本州",
+                                        "area": {
+                                            "x": 333,
+                                            "y": 553,
+                                            "width": 625,
+                                            "height": 227
+                                        }
                             },
-                            {
-                                "type": "message",
-                                "text": "四国",
-                                "area": {
-                                    "x": 333,
-                                    "y": 808,
-                                    "width": 305,
-                                    "height": 197
-                                }
+                                    {
+                                        "type": "message",
+                                        "text": "四国",
+                                        "area": {
+                                            "x": 333,
+                                            "y": 808,
+                                            "width": 305,
+                                            "height": 197
+                                        }
                             },
-                            {
-                                "type": "message",
-                                "text": "九州・沖縄",
-                                "area": {
-                                    "x": 50,
-                                    "y": 686,
-                                    "width": 254,
-                                    "height": 320
-                                }
+                                    {
+                                        "type": "message",
+                                        "text": "九州・沖縄",
+                                        "area": {
+                                            "x": 50,
+                                            "y": 686,
+                                            "width": 254,
+                                            "height": 320
+                                        }
                             }
                         ]
                     }
                 ]
+                    }
+
+
+                    var options = {
+                        "method": "post",
+                        "headers": {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
+                        },
+                        "payload": JSON.stringify(postData)
+                    };
+
+                    UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+                    return;
+                    break;
             }
-
-
-            var options = {
-                "method": "post",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
-                },
-                "payload": JSON.stringify(postData)
-            };
-
-            UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
             return;
             break;
-        }
-        return;
-        break;
-    case 1:
-        switch (e.message.text) {
-        case "東海":
-            this.database.SetValue(this.userId, "location", 13);
-            this.LocationSetting(e);
+        case 1:
+            switch (e.message.text) {
+                case "東海":
+                    this.database.SetValue(this.userId, "location", 13);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                default:
+                    var postData = {
+                        "replyToken": e.replyToken,
+                        "messages": [
+                            {
+                                "type": "imagemap",
+                                "baseUrl": "https://dl.dropboxusercontent.com/s/uazmk9iigcxpwbm/honshu.jpg",
+                                "altText": "地域を選択してください",
+                                "baseSize": {
+                                    "width": 1040,
+                                    "height": 1040
+                                },
+                                "actions": [
+                                    {
+                                        "type": "message",
+                                        "text": "東北",
+                                        "area": {
+                                            "x": 767,
+                                            "y": 218,
+                                            "width": 250,
+                                            "height": 374
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "関東",
+                                        "area": {
+                                            "x": 767,
+                                            "y": 608,
+                                            "width": 250,
+                                            "height": 215
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "北陸",
+                                        "area": {
+                                            "x": 495,
+                                            "y": 431,
+                                            "width": 250,
+                                            "height": 161
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "東海",
+                                        "area": {
+                                            "x": 495,
+                                            "y": 608,
+                                            "width": 250,
+                                            "height": 215
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "近畿",
+                                        "area": {
+                                            "x": 295,
+                                            "y": 461,
+                                            "width": 179,
+                                            "height": 362
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "中国",
+                                        "area": {
+                                            "x": 24,
+                                            "y": 461,
+                                            "width": 250,
+                                            "height": 181
+                                        }
+                            }
+                        ]
+                    }
+                ]
+                    }
+
+                    var options = {
+                        "method": "post",
+                        "headers": {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
+                        },
+                        "payload": JSON.stringify(postData)
+                    };
+
+                    UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+                    return;
+                    break;
+            }
             return;
+            break;
+        case 2:
+            switch (e.message.text) {
+                case "愛知":
+                    this.database.SetValue(this.userId, "location", 130);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                default:
+                    var postData = {
+                        "replyToken": e.replyToken,
+                        "messages": [
+                            {
+                                "type": "imagemap",
+                                "baseUrl": "https://dl.dropboxusercontent.com/s/9lopof5cur1b17d/tokai.jpg",
+                                "altText": "地域を選択してください",
+                                "baseSize": {
+                                    "width": 1040,
+                                    "height": 1040
+                                },
+                                "actions": [
+                                    {
+                                        "type": "message",
+                                        "text": "愛知",
+                                        "area": {
+                                            "x": 336,
+                                            "y": 544,
+                                            "width": 333,
+                                            "height": 251
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "岐阜",
+                                        "area": {
+                                            "x": 198,
+                                            "y": 137,
+                                            "width": 298,
+                                            "height": 387
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "三重",
+                                        "area": {
+                                            "x": 14,
+                                            "y": 544,
+                                            "width": 298,
+                                            "height": 387
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "静岡",
+                                        "area": {
+                                            "x": 691,
+                                            "y": 544,
+                                            "width": 333,
+                                            "height": 251
+                                        }
+                            }
+                        ]
+                    }
+                ]
+                    }
+
+                    var options = {
+                        "method": "post",
+                        "headers": {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
+                        },
+                        "payload": JSON.stringify(postData)
+                    };
+
+                    UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+                    return;
+                    break;
+            }
+            return;
+            break;
+        case 3:
+            switch (e.message.text) {
+                case "名古屋市":
+                    this.database.SetValue(this.userId, "location", 1301);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                default:
+                    var postData = {
+                        "replyToken": e.replyToken,
+                        "messages": [
+                            {
+                                "type": "imagemap",
+                                "baseUrl": "https://dl.dropboxusercontent.com/s/aj9pm9jgnbcraa7/aichi.jpg",
+                                "altText": "地域を選択してください",
+                                "baseSize": {
+                                    "width": 1040,
+                                    "height": 1040
+                                },
+                                "actions": [
+                                    {
+                                        "type": "message",
+                                        "text": "尾張地方",
+                                        "area": {
+                                            "x": 24,
+                                            "y": 198,
+                                            "width": 426,
+                                            "height": 266
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "名古屋市",
+                                        "area": {
+                                            "x": 186,
+                                            "y": 477,
+                                            "width": 266,
+                                            "height": 266
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "知多",
+                                        "area": {
+                                            "x": 186,
+                                            "y": 755,
+                                            "width": 266,
+                                            "height": 266
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "西三河",
+                                        "area": {
+                                            "x": 468,
+                                            "y": 198,
+                                            "width": 265,
+                                            "height": 540
+                                        }
+                            },
+                                    {
+                                        "type": "message",
+                                        "text": "東三河",
+                                        "area": {
+                                            "x": 751,
+                                            "y": 198,
+                                            "width": 266,
+                                            "height": 817
+                                        }
+                            }
+                        ]
+                    }
+                ]
+                    }
+
+                    var options = {
+                        "method": "post",
+                        "headers": {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
+                        },
+                        "payload": JSON.stringify(postData)
+                    };
+
+                    UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+                    return;
+                    break;
+            }
+            return;
+            break;
+        case 4:
+            this.TimeSetting(e);
             break;
         default:
-            var postData = {
-                "replyToken": e.replyToken,
-                "messages": [
-                    {
-                        "type": "imagemap",
-                        "baseUrl": "https://dl.dropboxusercontent.com/s/uazmk9iigcxpwbm/honshu.jpg",
-                        "altText": "地域を選択してください",
-                        "baseSize": {
-                            "width": 1040,
-                            "height": 1040
-                        },
-                        "actions": [
-                            {
-                                "type": "message",
-                                "text": "東北",
-                                "area": {
-                                    "x": 767,
-                                    "y": 218,
-                                    "width": 250,
-                                    "height": 374
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "関東",
-                                "area": {
-                                    "x": 767,
-                                    "y": 608,
-                                    "width": 250,
-                                    "height": 215
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "北陸",
-                                "area": {
-                                    "x": 495,
-                                    "y": 431,
-                                    "width": 250,
-                                    "height": 161
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "東海",
-                                "area": {
-                                    "x": 495,
-                                    "y": 608,
-                                    "width": 250,
-                                    "height": 215
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "近畿",
-                                "area": {
-                                    "x": 295,
-                                    "y": 461,
-                                    "width": 179,
-                                    "height": 362
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "中国",
-                                "area": {
-                                    "x": 24,
-                                    "y": 461,
-                                    "width": 250,
-                                    "height": 181
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-
-            var options = {
-                "method": "post",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
-                },
-                "payload": JSON.stringify(postData)
-            };
-
-            UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+            this.database.SetValue(this.userId, "gender", "");
+            this.StartSetting(e);
             return;
             break;
-        }
-        return;
-        break;
-    case 2:
-        switch (e.message.text) {
-        case "愛知":
-            this.database.SetValue(this.userId, "location", 130);
-            this.LocationSetting(e);
-            return;
-            break;
-        default:
-            var postData = {
-                "replyToken": e.replyToken,
-                "messages": [
-                    {
-                        "type": "imagemap",
-                        "baseUrl": "https://dl.dropboxusercontent.com/s/9lopof5cur1b17d/tokai.jpg",
-                        "altText": "地域を選択してください",
-                        "baseSize": {
-                            "width": 1040,
-                            "height": 1040
-                        },
-                        "actions": [
-                            {
-                                "type": "message",
-                                "text": "愛知",
-                                "area": {
-                                    "x": 336,
-                                    "y": 544,
-                                    "width": 333,
-                                    "height": 251
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "岐阜",
-                                "area": {
-                                    "x": 198,
-                                    "y": 137,
-                                    "width": 298,
-                                    "height": 387
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "三重",
-                                "area": {
-                                    "x": 14,
-                                    "y": 544,
-                                    "width": 298,
-                                    "height": 387
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "静岡",
-                                "area": {
-                                    "x": 691,
-                                    "y": 544,
-                                    "width": 333,
-                                    "height": 251
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-
-            var options = {
-                "method": "post",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
-                },
-                "payload": JSON.stringify(postData)
-            };
-
-            UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
-            return;
-            break;
-        }
-        return;
-        break;
-    case 3:
-        switch (e.message.text) {
-        case "名古屋市":
-            this.database.SetValue(this.userId, "location", 1301);
-            this.LocationSetting(e);
-            return;
-            break;
-        default:
-            var postData = {
-                "replyToken": e.replyToken,
-                "messages": [
-                    {
-                        "type": "imagemap",
-                        "baseUrl": "https://dl.dropboxusercontent.com/s/aj9pm9jgnbcraa7/aichi.jpg",
-                        "altText": "地域を選択してください",
-                        "baseSize": {
-                            "width": 1040,
-                            "height": 1040
-                        },
-                        "actions": [
-                            {
-                                "type": "message",
-                                "text": "尾張地方",
-                                "area": {
-                                    "x": 24,
-                                    "y": 198,
-                                    "width": 426,
-                                    "height": 266
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "名古屋市",
-                                "area": {
-                                    "x": 186,
-                                    "y": 477,
-                                    "width": 266,
-                                    "height": 266
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "知多",
-                                "area": {
-                                    "x": 186,
-                                    "y": 755,
-                                    "width": 266,
-                                    "height": 266
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "西三河",
-                                "area": {
-                                    "x": 468,
-                                    "y": 198,
-                                    "width": 265,
-                                    "height": 540
-                                }
-                            },
-                            {
-                                "type": "message",
-                                "text": "東三河",
-                                "area": {
-                                    "x": 751,
-                                    "y": 198,
-                                    "width": 266,
-                                    "height": 817
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-
-            var options = {
-                "method": "post",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
-                },
-                "payload": JSON.stringify(postData)
-            };
-
-            UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
-            return;
-            break;
-        }
-        return;
-        break;
-    case 4:
-        this.TimeSetting(e);
-        break;
-    default:
-        this.database.SetValue(this.userId, "gender", "");
-        this.StartSetting(e);
-        return;
-        break;
     }
 
     //this.FinishSetting(e);
@@ -572,7 +572,15 @@ Init.prototype.FinishSetting = function (e) {
         "messages": [
             {
                 "type": "text",
-                "text": "設定完了!"
+                "text": "設定完了！"
+            },
+            {
+                "type": "text",
+                "text": e.message.text.slice(0, -3) + "時に通知が届きます"
+            },
+            {
+                "type": "text",
+                "text": "お楽しみに！"
             }
         ]
     };

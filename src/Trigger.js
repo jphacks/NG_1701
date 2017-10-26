@@ -6,6 +6,10 @@ function setTrigger() {
     var timelist = [];
     var low = 2;
     while (userDatabase.GetValueByCell(low, 1) != "") {
+        if (userDatabase.GetValueByCell(low, 2) != "") {
+            low++;
+            continue;
+        }
         var userId = userDatabase.GetValueByCell(low, 1);
         var hour = userDatabase.GetValue(userId, "time");
         var timeLow = timelist.indexOf(hour);
@@ -34,9 +38,14 @@ function setTrigger() {
         low++;
     }
 
+    var setTime = new Date();
+
     timelist.forEach(function (timenum) {
-        ScriptApp.newTrigger("PushByTime").timeBased().atHour(timenum).everyDays(1).create();
+        setTime.setHours(timenum);
+        setTime.setMinutes(0);
+        ScriptApp.newTrigger("PushByTime").timeBased().at(setTime).create();
     });
+    ScriptApp.newTrigger("setTrigger").timeBased().atHour(0).everyDays(1).create();
 }
 
 //トリガーで実行される関数。
