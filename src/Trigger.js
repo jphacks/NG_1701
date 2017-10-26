@@ -3,6 +3,7 @@ function setTrigger() {
     deleteTrigger();
     var userDatabase = new Database();
     var pushSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[1];
+    pushSheet.clear();
     var timelist = [];
     var low = 2;
     while (userDatabase.GetValueByCell(low, 1) != "") {
@@ -41,6 +42,11 @@ function setTrigger() {
     var setTime = new Date();
 
     timelist.forEach(function (timenum) {
+        var nowTime = new Date();
+        if (nowTime.getHours() > timenum) {
+            Logger.log("true");
+            setTime.setDate(nowTime.getDate() + 1);
+        }
         setTime.setHours(timenum);
         setTime.setMinutes(0);
         ScriptApp.newTrigger("PushByTime").timeBased().at(setTime).create();
@@ -53,9 +59,14 @@ function PushByTime() {
     var pushSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[1];
     var col = 2;
     while (pushSheet.getRange(1, col).getValue() != "") {
-        var userId = pushSheet.getRange(1, col).getValue();
-        pushTriggerData(userId); //userIdを引数とする関数をここにセット
-        col++;
+        try {
+            var userId = pushSheet.getRange(1, col).getValue();
+            pushTriggerData(userId); //userIdを引数とする関数をここにセット
+            col++;
+            testSlack("Pushed! " + userId);
+        } catch (e) {
+            testSlack(e.message);
+        }
     }
     pushSheet.deleteRow(1);
 }
