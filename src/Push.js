@@ -352,10 +352,13 @@ makeMaterial.prototype.makeText = function(atugido){
       break;
     case 2:
       degree = "かなり";
+      break;
     case 3:
-      degree = "非常に"
+      degree = "非常に";
+      break;
     default:
-      degree = "異常なまでに"
+      degree = "異常なまでに";
+      break;
   }
 
   //朝の厚着度が存在する場合
