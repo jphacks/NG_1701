@@ -21,6 +21,9 @@ var LOCATION_ID = {
             },
             "5": {
                 "0": "Chiba-shi"
+            },
+            "6": {
+                "0": "Mito-shi"
             }
         },
         "2": "Toyama-shi",
@@ -32,7 +35,9 @@ var LOCATION_ID = {
                 "3": "Okazaki",
                 "4": "Toyohashi"
             },
-            "1": "Gifu-shi",
+            "1": {
+                "0": "Gifu-shi"
+            },
             "2": "Tsu-shi",
             "3": "Shizuoka-shi"
         },
@@ -64,9 +69,22 @@ var LOCATION_ID = {
     "3": "Kumamoto-shi"
 };
 
+function TEST_chon() {
+    Logger.log(GetLocationJapaneseName(locationId));
+}
+
 //locationIdに数字を入力(データベースのGetValueを使用推奨)
 function GetLocationName(locationId) {
-    var numlist = [];
+    var location_string = String(locationId);
+    var locationSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[2];
+    var cells = locationSheet.getRange(1, 1, locationSheet.getLastRow(), locationSheet.getLastColumn()).getValues();
+    for (var i = 0; i < cells.length; i++) {
+        if (cells[i][0] == location_string) {
+            return cells[i][1];
+            break;
+        }
+    }
+    /*var numlist = [];
     for (var i = 0; i < String(locationId).length; i++) {
         numlist.push(String(locationId).charAt(i));
     }
@@ -89,7 +107,19 @@ function GetLocationName(locationId) {
         default:
             locationName = "null";
             break;
-    }
+    }*/
 
-    return locationName;
+    //return locationName;
+}
+
+function GetLocationJapaneseName(locationId) {
+    var location_string = String(locationId);
+    var locationSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[2];
+    var cells = locationSheet.getRange(1, 1, locationSheet.getLastRow(), locationSheet.getLastColumn()).getValues();
+    for (var i = 0; i < cells.length; i++) {
+        if (cells[i][0] == location_string) {
+            return cells[i][2];
+            break;
+        }
+    }
 }

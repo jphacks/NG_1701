@@ -15,52 +15,34 @@ var Init = function (e) {
 
 //設定の始まり
 Init.prototype.StartSetting = function (e) {
-    //var e = this.event;
+    this.Setting(e);
+};
+
+Init.prototype.Setting = function (e) {
+    if (this.database.GetValue(this.userId, "gender") == "") {
+        this.GenderSetting(e);
+    } else if (String(this.database.GetValue(this.userId, "location")).length != 4) {
+        this.LocationSetting(e);
+    } else if (this.database.GetValue(this.userId, "time") == "") {
+        this.TimeSetting(e);
+    } else {
+        this.FinishSetting(e);
+    }
+};
+
+Init.prototype.ShowSetting = function (e) {
+    var gender = this.database.GetValue(this.userId, "gender");
+    var location = this.database.GetValue(this.userId, "location");
+    var time = this.database.GetValue(this.userId, "time");
     var postData = {
         "replyToken": e.replyToken,
         "messages": [
-            /*(this.database.GetValue(e.source.userId, "gender") == "不明") ? {
-                "type": "text",
-                "text": "画像をクリックしてください"
-            } :*/
             {
                 "type": "text",
-                "text": "服装を提案するために初期設定をします"
-            },
-            {
-                "type": "text",
-                "text": "性別を選択してください"
-            },
-            {
-                "type": "imagemap",
-                "baseUrl": "https://dl.dropboxusercontent.com/s/44q04ftlnbg5q09/gender.jpg",
-                "altText": "性別を選択してください",
-                "baseSize": {
-                    "width": 1040,
-                    "height": 520
-                },
-                "actions": [
-                    {
-                        "type": "message",
-                        "text": "おとこ",
-                        "area": {
-                            "x": 0,
-                            "y": 0,
-                            "width": 520,
-                            "height": 520
-                        }
-                    },
-                    {
-                        "type": "message",
-                        "text": "おんな",
-                        "area": {
-                            "x": 520,
-                            "y": 0,
-                            "width": 520,
-                            "height": 520
-                        }
-                    }
-                ]
+                "text": "【現在の設定】\n" +
+                    "性別 : " + (gender == "men" ? "男性 " : "女性 ") + "\n" +
+                    "地域 : " + GetLocationJapaneseName(location) + "\n" +
+                    "設定時間 : " + time + "時"
             }
         ]
     };
@@ -76,32 +58,135 @@ Init.prototype.StartSetting = function (e) {
     };
 
     UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
-};
+    return;
+}
 
-Init.prototype.Setting = function (e) {
-    if (this.database.GetValue(this.userId, "gender") == "") {
-        switch (e.message.text) {
-            case "おとこ":
-                this.database.SetValue(this.userId, "gender", "men");
-                break;
-            case "おんな":
-                this.database.SetValue(this.userId, "gender", "women");
-                break;
-            default:
-                this.database.SetValue(this.userId, "gender", "");
-                this.StartSetting(e);
-                return;
-                break;
-        }
+Init.prototype.GenderSetting = function (e) {
+    if (e.type == "follow") {
+        var gpostData = {
+            "replyToken": e.replyToken,
+            "messages": [
+                {
+                    "type": "text",
+                    "text": "服装を提案するために初期設定をします"
+                    },
+                {
+                    "type": "text",
+                    "text": "性別を選択してください"
+                    },
+                {
+                    "type": "imagemap",
+                    "baseUrl": "https://dl.dropboxusercontent.com/s/44q04ftlnbg5q09/gender.jpg",
+                    "altText": "性別を選択してください",
+                    "baseSize": {
+                        "width": 1040,
+                        "height": 520
+                    },
+                    "actions": [
+                        {
+                            "type": "message",
+                            "text": "おとこ",
+                            "area": {
+                                "x": 0,
+                                "y": 0,
+                                "width": 520,
+                                "height": 520
+                            }
+                            },
+                        {
+                            "type": "message",
+                            "text": "おんな",
+                            "area": {
+                                "x": 520,
+                                "y": 0,
+                                "width": 520,
+                                "height": 520
+                            }
+                            }
+                        ]
+                    }
+                ]
+        };
 
-        this.LocationSetting(e);
 
-    } else if (String(this.database.GetValue(this.userId, "location")).length != 4) {
-        this.LocationSetting(e);
-    } else if (this.database.GetValue(this.userId, "time") == "") {
-        this.TimeSetting(e);
+        var goptions = {
+            "method": "post",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
+            },
+            "payload": JSON.stringify(gpostData)
+        };
+
+        UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", goptions);
+        return;
     }
-};
+    switch (e.message.text) {
+        case "おとこ":
+            this.database.SetValue(this.userId, "gender", "men");
+            this.Setting(e);
+            break;
+        case "おんな":
+            this.database.SetValue(this.userId, "gender", "women");
+            this.Setting(e);
+            break;
+        default:
+            var postData = {
+                "replyToken": e.replyToken,
+                "messages": [
+                    {
+                        "type": "text",
+                        "text": "性別を選択してください"
+                    },
+                    {
+                        "type": "imagemap",
+                        "baseUrl": "https://dl.dropboxusercontent.com/s/44q04ftlnbg5q09/gender.jpg",
+                        "altText": "性別を選択してください",
+                        "baseSize": {
+                            "width": 1040,
+                            "height": 520
+                        },
+                        "actions": [
+                            {
+                                "type": "message",
+                                "text": "おとこ",
+                                "area": {
+                                    "x": 0,
+                                    "y": 0,
+                                    "width": 520,
+                                    "height": 520
+                                }
+                            },
+                            {
+                                "type": "message",
+                                "text": "おんな",
+                                "area": {
+                                    "x": 520,
+                                    "y": 0,
+                                    "width": 520,
+                                    "height": 520
+                                }
+                            }
+                        ]
+                    }
+                ]
+            };
+
+
+            var options = {
+                "method": "post",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
+                },
+                "payload": JSON.stringify(postData)
+            };
+
+            UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+            return;
+            break;
+    }
+}
 
 Init.prototype.LocationSetting = function (e) {
     var locationId = String(this.database.GetValue(this.userId, "location"));
@@ -400,6 +485,21 @@ Init.prototype.LocationSetting = function (e) {
                     this.LocationSetting(e);
                     return;
                     break;
+                case "岐阜":
+                    this.database.SetValue(this.userId, "location", 1310);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "三重":
+                    this.database.SetValue(this.userId, "location", 1320);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "静岡":
+                    this.database.SetValue(this.userId, "location", 1330);
+                    this.LocationSetting(e);
+                    return;
+                    break;
                 case "群馬":
                     this.database.SetValue(this.userId, "location", 1100);
                     this.LocationSetting(e);
@@ -427,6 +527,11 @@ Init.prototype.LocationSetting = function (e) {
                     break;
                 case "千葉":
                     this.database.SetValue(this.userId, "location", 1150);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "茨城":
+                    this.database.SetValue(this.userId, "location", 1160);
                     this.LocationSetting(e);
                     return;
                     break;
@@ -502,6 +607,16 @@ Init.prototype.LocationSetting = function (e) {
                                                     "x": 615,
                                                     "y": 748,
                                                     "width": 181,
+                                                    "height": 248
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "茨城",
+                                                "area": {
+                                                    "x": 615,
+                                                    "y": 494,
+                                                    "width": 288,
                                                     "height": 248
                                                 }
                                             }
@@ -696,7 +811,7 @@ Init.prototype.LocationSetting = function (e) {
             return;
             break;
         case 4:
-            this.TimeSetting(e);
+            this.Setting(e);
             break;
         default:
             this.database.SetValue(this.userId, "gender", "");
@@ -704,15 +819,12 @@ Init.prototype.LocationSetting = function (e) {
             return;
             break;
     }
-
-    //this.FinishSetting(e);
-
 };
 
 Init.prototype.TimeSetting = function (e) {
     if (e.message.text.match(/^\d{1,2}:00$/) && Number(e.message.text.slice(0, -3)) <= 23) {
         this.database.SetValue(this.userId, "time", Number(e.message.text.slice(0, -3)));
-        this.FinishSetting(e);
+        this.Setting(e);
     } else {
         var postData = {
             "replyToken": e.replyToken,
@@ -790,25 +902,36 @@ Init.prototype.TimeSetting = function (e) {
 }
 
 Init.prototype.FinishSetting = function (e) {
-    this.database.SetValue(this.userId, "flag", "");
-
-    var postData = {
-        "replyToken": e.replyToken,
-        "messages": [
-            {
-                "type": "text",
-                "text": "設定完了！"
-            },
-            {
-                "type": "text",
-                "text": e.message.text.slice(0, -3) + "時に通知が届きます"
-            },
-            {
-                "type": "text",
-                "text": "お楽しみに！"
-            }
-        ]
-    };
+    var postData;
+    if (this.database.GetValue(this.userId, "flag") == "Setting") {
+        postData = {
+            "replyToken": e.replyToken,
+            "messages": [
+                {
+                    "type": "text",
+                    "text": "設定完了！"
+                }
+            ]
+        };
+    } else {
+        postData = {
+            "replyToken": e.replyToken,
+            "messages": [
+                {
+                    "type": "text",
+                    "text": "設定完了！"
+                },
+                {
+                    "type": "text",
+                    "text": e.message.text.slice(0, -3) + "時に通知が届きます"
+                },
+                {
+                    "type": "text",
+                    "text": "お楽しみに！"
+                }
+            ]
+        };
+    }
 
 
     var options = {
@@ -821,4 +944,5 @@ Init.prototype.FinishSetting = function (e) {
     };
 
     UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+    this.database.SetValue(this.userId, "flag", "");
 }
