@@ -18,16 +18,17 @@ function Test_Chon() {
 
 function GetImageURLs(imgArr) {
     var dropbox = [];
+    var downloadId = [];
     for (var i = 0; i < imgArr.length; i++) {
         dropbox.push(new Dropbox(imgArr[i]));
     }
     for (var i = 0; i < dropbox.length; i++) {
-        dropbox[i].UploadToDropbox(i);
+        downloadId.push(dropbox[i].UploadToDropbox(i));
     }
     var res = [];
     var CorrectUrl = [];
     for (var i = 0; i < dropbox.length; i++) {
-        res.push(JSON.parse(dropbox[i].MakeShareLink(i).getContentText()));
+        res.push(JSON.parse(dropbox[i].MakeShareLink(i, downloadId[i].async_job_id).getContentText()));
     }
     for (var i = 0; i < dropbox.length; i++) {
         CorrectUrl.push((res[i].url).substr(23).slice(0, -5));
@@ -41,7 +42,7 @@ Dropbox.prototype = {
         var fileBlob = UrlFetchApp.fetch(this.imgPath).getBlob().setName(this.filename);
         this.file = DriveApp.createFile(fileBlob);
         this.file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-        this.fileid=this.file.getId();
+        this.fileid = this.file.getId();
 
         var parameters = {
             "path": "/imgSrc/" + num + this.fileid + this.imgTitle,
@@ -59,11 +60,35 @@ Dropbox.prototype = {
             "payload": JSON.stringify(parameters)
         };
 
-        UrlFetchApp.fetch(this.url, options);
+        return JSON.parse(UrlFetchApp.fetch(this.url, options).getContentText());
     },
 
-    MakeShareLink: function (num) {
+    MakeShareLink: function (num, sync_id) {
         DriveApp.removeFile(this.file);
+        var checkUrl = "https://api.dropboxapi.com/2/files/save_url/check_job_status";
+        var status = "";
+
+        var checkParameters = {
+            "async_job_id": sync_id
+        };
+
+        var checkHeaders = {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + this.token
+        };
+
+        var checkOptions = {
+            "method": "post",
+            "headers": checkHeaders,
+            "payload": JSON.stringify(checkParameters)
+        };
+
+        do {
+
+            var jso = JSON.parse(UrlFetchApp.fetch(checkUrl, checkOptions).getContentText());
+            //Logger.log(jso);
+            status = jso[".tag"];
+        } while (status != "complete");
 
         var shareParameters = {
             "path": "/imgSrc/" + num + this.fileid + this.imgTitle,
