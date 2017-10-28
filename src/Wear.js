@@ -14,10 +14,15 @@ Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gender){
   var targetDate = goo.getFitDate(highTmp, lowTmp, amWe, pmWe, weatherInfo);
   Logger.log(targetDate);
 
-//  for (var i = 0; i < 1; i++){
+  targetDate.sort(function(a, b){return b.d - a.d;});
+  Logger.log(targetDate);
+
   for (var i = 0; i < targetDate.length; i++){
     var d = new Date(targetDate[i].y, targetDate[i].m-1, targetDate[i].d);
-    this.getImageUrl(gender, d, this.region, 0);
+    var page = 1;
+    while (page != -1){
+      page = this.getImageUrl(gender, d, this.region, page);
+    }
     if(this.urls.length >= 3) break;
   }
 
@@ -36,58 +41,11 @@ Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gender){
 
   Logger.log(this.urls);
 
-  /*
-  // 1d
-  var response = [
-    {
-      "imgUrl" : "https://dl.dropboxusercontent.com/s/jgvblth7jqiemjd/1-1.jpg",
-      "link" : "http://wear.jp/kadotk4/11009163/"
-    },
-    {
-      "imgUrl" : "https://dl.dropboxusercontent.com/s/uj5jbn7jh348859/1-2.jpg",
-      "link" : "http://wear.jp/onealex/11007195/"
-    },
-    {
-      "imgUrl" : "https://dl.dropboxusercontent.com/s/ofkcroh5yh4ho76/1-3.jpg",
-      "link" : "http://wear.jp/ar0287/11005166/"
-    }
-  ]
-  // 2d
-  var response = [
-    {
-      "imgUrl" : "https://dl.dropboxusercontent.com/s/461vihb2g2p4j7w/2-1.jpg",
-      "link" : "http://wear.jp/bc137/10973668/"
-    },
-    {
-      "imgUrl" : "https://dl.dropboxusercontent.com/s/snlb0g2h34jp3ju/2-2.jpg",
-      "link" : "http://wear.jp/dead2zero/10799337/"
-    },
-    {
-      "imgUrl" : "https://dl.dropboxusercontent.com/s/3xvns0yooqg5l4k/2-3.jpg",
-      "link" : "http://wear.jp/astrum/10976362/"
-    }
-  ]
-  // 3d
-  var response = [
-    {
-      "imgUrl" : "https://dl.dropboxusercontent.com/s/ro0xa29avrefoig/3-1.jpg?dl=0",
-      "link" : "http://wear.jp/zawakana0225/11089246/"
-    },
-    {
-      "imgUrl" : "https://dl.dropboxusercontent.com/s/nu1scfd7mp3glnu/3-2.jpg?dl=0",
-      "link" : "http://wear.jp/kazuma05/11001377/"
-    },
-    {
-      "imgUrl" : "https://dl.dropboxusercontent.com/s/ldpn64n87blnzp5/3-3.jpg?dl=0",
-      "link" : "http://wear.jp/Disney5189/10995558/"
-    }
-  ]
-  */
   return this.urls;
 }
 
 Wear.prototype.getImageUrl = function(gender, date, region, page){
-  if (this.urls.length >= 3) return;
+  if (this.urls.length >= 3) return -1;
 
   // Wearからデータリスト（xmlで）を取得
   var url = "http://wear.jp/" + gender + "-coordinate/?country_id=1" + "&region_id=" + region + "&type_id=2" + "&pageno=" + page + "&from_month=" + (date.getMonth()+1) + "&to_month=" + (date.getMonth()+1);
@@ -126,18 +84,18 @@ Wear.prototype.getImageUrl = function(gender, date, region, page){
           "link" : link
         }
         this.urls.push(item);
-        if (this.urls.length >= 3) return;
+        if (this.urls.length >= 3) return -1;
       }
     }
     if(finishFlag)
-      return;
+      return -1;
     else
-      return this.getImageUrl(gender, date, region, page+1);
+      return page+1;
   } else {
     if(finishFlag)
       return;
     else
-      return this.getImageUrl(gender, date, region, page+1);
+      return page+1;
   }
 }
 
@@ -171,6 +129,7 @@ Wear.prototype.castDate = function(displayDate){
 }
 
 function Uchida_Test(){
-  var wear = new Wear();
-  wear.getUrlJsons(18.3,17,"晴", "雲", "men");
+//  var wear = new Wear();
+//  wear.getUrlJsons(18.3,17,"晴", "雲", "women");
+  pushTriggerData("U93951236c245cfaa1818f60818e119ce");
 }
