@@ -5,10 +5,6 @@ var Goo = function () {
 
 Goo.prototype = {
   getFitDate : function(highTmp, lowTmp, amW, pmW, array){
-//    amW = this.castWeatherString(amW);
-//    pmW = this.castWeatherString(pmW);
-//    Logger.log(amW + " " + pmW);
-
     var newArray = [];
     for (var i = 0; i < array.length; i++){
       if(Math.abs(array[i].hT - highTmp) < 2 && Math.abs(array[i].lT - lowTmp) < 2)
@@ -21,8 +17,6 @@ Goo.prototype = {
         newArray.push(item);
       }
     }
-    Logger.log("*******************");
-    Logger.log(newArray);
     return newArray;
   },
   castWeatherString : function(weather){
@@ -38,7 +32,7 @@ Goo.prototype = {
   },
   getWeatherInfo : function(){
     var today = new Date();
-    return this.getWeatherInfoFromDate(new Date(today.getYear(), today.getMonth()-1, today.getDate())).concat(this.getWeatherInfoFromDate(today));
+    return this.getWeatherInfoFromDate(new Date(today.getYear(), today.getMonth()-1, today.getDate())).concat(this.getWeatherInfoFromDate(today)).concat(this.getWeatherInfoFromDate(new Date(today.getYear()-1, today.getMonth()+1, today.getDate())));
   },
   getWeatherInfoFromDate : function(date){
     var m = date.getMonth()+1;
@@ -63,8 +57,8 @@ Goo.prototype = {
       var ths5 = trs[i+4].getChildren("td");
 
       for (var j = 0; j < 7; j++){
-        if (ths1[j] != undefined && ths1[j].getValue() != "-"){
-      　var item = {
+        if (ths1[j] != undefined && ths1[j].getValue() != "-" && ths1[j].getValue() > 15){
+          var item = {
             "y" : date.getYear(),
             "m" : date.getMonth()+1,
             "d" : ths1[j].getValue(),
@@ -72,14 +66,11 @@ Goo.prototype = {
             "lT" : ths2[j].getChildren("span")[1].getValue(),
             "amW" : ths3[j].getChild("img").getAttribute('alt').getValue(),
             "pmW" : ths5[j].getChild("img").getAttribute('alt').getValue()
-        };
-        array.push(item);
+          };
+          array.push(item);
         }
       }
     }
-
-    Logger.log(array);
-
     return array;
   }
 }
