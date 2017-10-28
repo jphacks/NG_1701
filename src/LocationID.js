@@ -3,7 +3,26 @@ var LOCATION_ID = {
     "0": "Sapporo-shi",
     "1": {
         "0": "Sendai-shi",
-        "1": "Tokyo",
+        "1": {
+            "0": {
+                "0": "Maebashi-shi"
+            },
+            "1": {
+                "0": "Utsunomiya-shi"
+            },
+            "2": {
+                "0": "Saitama"
+            },
+            "3": {
+                "0": "Tokyo"
+            },
+            "4": {
+                "0": "Yokohama-shi"
+            },
+            "5": {
+                "0": "Chiba-shi"
+            }
+        },
         "2": "Toyama-shi",
         "3": {
             "0": {
@@ -20,7 +39,28 @@ var LOCATION_ID = {
         "4": "Osaka",
         "5": "Hiroshima-shi"
     },
-    "2": "Kochi-shi",
+    "2": {
+        "0": {
+            "0": {
+                "0": "Takamatsu-shi"
+            }
+        },
+        "1": {
+            "0": {
+                "0": "Tokushima-shi"
+            }
+        },
+        "2": {
+            "0": {
+                "0": "Matsuyama-shi"
+            }
+        },
+        "3": {
+            "0": {
+                "0": "Kochi-shi"
+            }
+        }
+    },
     "3": "Kumamoto-shi"
 };
 
@@ -34,21 +74,21 @@ function GetLocationName(locationId) {
     var locationName = "";
 
     switch (numlist.length) {
-    case 1:
-        locationName = LOCATION_ID[numlist[0]];
-        break;
-    case 2:
-        locationName = LOCATION_ID[numlist[0]][numlist[1]];
-        break;
-    case 3:
-        locationName = LOCATION_ID[numlist[0]][numlist[1]][numlist[2]];
-        break;
-    case 4:
-        locationName = LOCATION_ID[numlist[0]][numlist[1]][numlist[2]][numlist[3]];
-        break;
-    default:
-        locationName = "null";
-        break;
+        case 1:
+            locationName = LOCATION_ID[numlist[0]];
+            break;
+        case 2:
+            locationName = LOCATION_ID[numlist[0]][numlist[1]];
+            break;
+        case 3:
+            locationName = LOCATION_ID[numlist[0]][numlist[1]][numlist[2]];
+            break;
+        case 4:
+            locationName = LOCATION_ID[numlist[0]][numlist[1]][numlist[2]][numlist[3]];
+            break;
+        default:
+            locationName = "null";
+            break;
     }
 
     return locationName;
