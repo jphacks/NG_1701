@@ -327,6 +327,7 @@ makeMaterial.prototype.makeText = function(atugido){
   var equalword;
   var minusword0;
   var minusword1;
+  var degree;
   if(atugido[2]<4){
     plusword0 = "気温が上がり";
     plusword1 = "気温が上がる";
@@ -341,10 +342,26 @@ makeMaterial.prototype.makeText = function(atugido){
     minusword1 = "涼しくなる";
   }
 
+  //形容詞の生成
+  switch (Math.abs(atugido[1]-atugido[0])) {
+    case 0:
+      degree = "";
+      break;
+    case 1:
+      degree = "少し";
+      break;
+    case 2:
+      degree = "かなり";
+    case 3:
+      degree = "非常に"
+    default:
+      degree = "異常なまでに"
+  }
+
   //朝の厚着度が存在する場合
   if(atugido[0]<7){
     if(atugido[0]<atugido[1]){
-      text = "日中になると"+plusword0;
+      text = "日中になると"+degree+plusword0;
       if(atugido[1]<atugido[2]){
         text += "夜になるとさらに"+plusword1+"でしょう。";
       }else if(atugido[1]==atugido[2]){
@@ -362,7 +379,7 @@ makeMaterial.prototype.makeText = function(atugido){
         text += "夜は"+minusword1+"でしょう。";
       }
     }else if(atugido[0]>atugido[1]){
-      text = "日中になると"+minusword0;
+      text = "日中になると"+degree+minusword0;
       if(atugido[1]<atugido[2]){
         text += "夜になると"+plusword1+"でしょう。";
       }else if(atugido[1]==atugido[2]){
