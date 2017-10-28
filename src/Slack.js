@@ -1,5 +1,6 @@
 function SlackLog(text) {
-    var token = "xoxp-255097650355-255228759108-261242846418-7b53675f21b4c7e330236455f6514290";
+    var slackSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[3];
+    var token = slackSheet.getRange(1, 2).getValue();
     var channel = "#jphacks_slacklog";
     var username = "SLACK_LOG_BOT";
 
