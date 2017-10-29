@@ -30,6 +30,35 @@ var Reply = function (e) {
                 var init = new Init(e);
                 init.ShowSetting(e);
                 break;
+            default:
+                this.AutoMessage(e);
+                break;
         }
     }
 };
+
+Reply.prototype.AutoMessage = function (e) {
+    var postData = {
+        "replyToken": e.replyToken,
+        "messages": [
+            {
+                "type": "text",
+                "text": "メッセージありがとうございます！\n" +
+                    "申し訳ありませんが、個別の返信は不可能となっております。\n" +
+                    "次の配信をお楽しみに♪"
+            }
+        ]
+    };
+
+
+    var options = {
+        "method": "post",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + CHANNEL_ACCESS_TOKEN
+        },
+        "payload": JSON.stringify(postData)
+    };
+
+    UrlFetchApp.fetch("https://api.line.me/v2/bot/message/reply", options);
+}
