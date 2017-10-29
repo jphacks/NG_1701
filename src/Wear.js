@@ -69,7 +69,9 @@ Wear.prototype.getImageUrl = function(gender, date, region, page){
 
   // 日付に一致したデータを取得
   var oldestDate = this.castDate(li[li.length-1].getChildren('div')[0].getChildren('p')[1].getValue());
-  if(date >= new Date(oldestDate[0], oldestDate[1]-1, oldestDate[2])){
+  var nearlyDate = this.castDate(li[0].getChildren('div')[0].getChildren('p')[1].getValue());
+  if(date < new Date(nearlyDate[0], nearlyDate[1]-1, nearlyDate[2])){
+    if(date >= new Date(oldestDate[0], oldestDate[1]-1, oldestDate[2])){
     for(var i=0,l=li.length;i<l;i++){
       var div = li[i].getChildren('div')[0];
       var displayDate = div.getChildren('p')[1].getValue();
@@ -91,11 +93,14 @@ Wear.prototype.getImageUrl = function(gender, date, region, page){
       return -1;
     else
       return page+1;
+    } else {
+      if(finishFlag)
+        return -1;
+        else
+        return page+1;
+    }
   } else {
-    if(finishFlag)
-      return;
-    else
-      return page+1;
+      return -1;
   }
 }
 
