@@ -16,6 +16,7 @@ Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gender){
 
   targetDate.sort(function(a, b){return b.d - a.d;});
   Logger.log(targetDate);
+  SlackLog(targetDate);
 
   for (var i = 0; i < targetDate.length; i++){
     var d = new Date(targetDate[i].y, targetDate[i].m-1, targetDate[i].d);
@@ -51,6 +52,7 @@ Wear.prototype.getImageUrl = function(gender, date, region, page){
   var url = "http://wear.jp/" + gender + "-coordinate/?country_id=1" + "&region_id=" + region + "&type_id=2" + "&pageno=" + page + "&from_month=" + (date.getMonth()+1) + "&to_month=" + (date.getMonth()+1);
 
   Logger.log(url);
+  SlackLog("解析を試みるURL : " + url);
 
   var response = UrlFetchApp.fetch(url).getContentText();
   var doc = Xml.parse(response, true);
