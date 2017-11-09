@@ -98,7 +98,6 @@ function PushByTime() {
 
             var nowTime = new Date();
             if (nowTime.getHours() > timenum) {
-                Logger.log("true");
                 setTime.setDate(nowTime.getDate() + 1);
             }
             setTime.setHours(timenum);
@@ -111,6 +110,22 @@ function PushByTime() {
         ScriptApp.newTrigger("setTrigger").timeBased().atHour(0).everyDays(1).create();
         SlackLog("Finished!!");
     }
+}
+
+function testPushOfTrigger() {
+    SlackLog("Trigger Start");
+    var pushSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[1];
+    var userId = pushSheet.getRange(1, 1).getValue();
+    while (true) {
+        try {
+            pushTriggerData(userId); //userIdを引数とする関数をここにセット
+            SlackLog("Pushed : " + userId);
+            break;
+        } catch (e) {
+            SlackLog(e.message);
+        }
+    }
+    SlackLog("Finished!!");
 }
 
 function testStartTrigger() {

@@ -308,6 +308,11 @@ Init.prototype.LocationSetting = function (e) {
                     this.LocationSetting(e);
                     return;
                     break;
+                case "近畿":
+                    this.database.SetValue(this.userId, "location", 14);
+                    this.LocationSetting(e);
+                    return;
+                    break;
                 case "香川":
                     this.database.SetValue(this.userId, "location", 2000);
                     this.LocationSetting(e);
@@ -540,6 +545,41 @@ Init.prototype.LocationSetting = function (e) {
                     this.LocationSetting(e);
                     return;
                     break;
+                case "兵庫":
+                    this.database.SetValue(this.userId, "location", 1400);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "京都":
+                    this.database.SetValue(this.userId, "location", 1410);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "滋賀":
+                    this.database.SetValue(this.userId, "location", 1420);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "大阪":
+                    this.database.SetValue(this.userId, "location", 1430);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "和歌山":
+                    this.database.SetValue(this.userId, "location", 1440);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "奈良":
+                    this.database.SetValue(this.userId, "location", 1450);
+                    this.LocationSetting(e);
+                    return;
+                    break;
+                case "三重":
+                    this.database.SetValue(this.userId, "location", 1460);
+                    this.LocationSetting(e);
+                    return;
+                    break;
                 default:
                     switch (locationId.charAt(1)) {
                         case "1":
@@ -652,7 +692,7 @@ Init.prototype.LocationSetting = function (e) {
                                                     "width": 333,
                                                     "height": 251
                                                 }
-                            },
+                                            },
                                             {
                                                 "type": "message",
                                                 "text": "岐阜",
@@ -662,7 +702,7 @@ Init.prototype.LocationSetting = function (e) {
                                                     "width": 298,
                                                     "height": 387
                                                 }
-                            },
+                                            },
                                             {
                                                 "type": "message",
                                                 "text": "三重",
@@ -672,7 +712,7 @@ Init.prototype.LocationSetting = function (e) {
                                                     "width": 298,
                                                     "height": 387
                                                 }
-                            },
+                                            },
                                             {
                                                 "type": "message",
                                                 "text": "静岡",
@@ -682,10 +722,98 @@ Init.prototype.LocationSetting = function (e) {
                                                     "width": 333,
                                                     "height": 251
                                                 }
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
-                        ]
-                    }
-                ]
+                            break;
+                        case "4":
+                            var postData = {
+                                "replyToken": e.replyToken,
+                                "messages": [
+                                    {
+                                        "type": "imagemap",
+                                        "baseUrl": "https://dl.dropboxusercontent.com/s/bthztl83glo39a8/kinki.jpg",
+                                        "altText": "地域を選択してください",
+                                        "baseSize": {
+                                            "width": 1040,
+                                            "height": 1040
+                                        },
+                                        "actions": [
+                                            {
+                                                "type": "message",
+                                                "text": "兵庫",
+                                                "area": {
+                                                    "x": 179,
+                                                    "y": 257,
+                                                    "width": 241,
+                                                    "height": 305
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "京都",
+                                                "area": {
+                                                    "x": 427,
+                                                    "y": 258,
+                                                    "width": 223,
+                                                    "height": 305
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "滋賀",
+                                                "area": {
+                                                    "x": 657,
+                                                    "y": 259,
+                                                    "width": 189,
+                                                    "height": 230
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "大阪",
+                                                "area": {
+                                                    "x": 357,
+                                                    "y": 568,
+                                                    "width": 178,
+                                                    "height": 224
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "和歌山",
+                                                "area": {
+                                                    "x": 357,
+                                                    "y": 799,
+                                                    "width": 179,
+                                                    "height": 217
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "奈良",
+                                                "area": {
+                                                    "x": 542,
+                                                    "y": 568,
+                                                    "width": 109,
+                                                    "height": 295
+                                                }
+                                            },
+                                            {
+                                                "type": "message",
+                                                "text": "三重",
+                                                "area": {
+                                                    "x": 657,
+                                                    "y": 496,
+                                                    "width": 189,
+                                                    "height": 465
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                             break;
                     }
