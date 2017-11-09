@@ -203,6 +203,11 @@ Init.prototype.LocationSetting = function (e) {
                     this.LocationSetting(e);
                     return;
                     break;
+                case "北海道":
+                    this.database.SetValue(this.userId, "location", "0000");
+                    this.LocationSetting(e);
+                    return;
+                    break;
                 default:
                     var postData = {
                         "replyToken": e.replyToken,

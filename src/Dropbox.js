@@ -17,7 +17,7 @@ function Test_Chon() {
 }
 
 function GetImageURLs(imgArr) {
-    var dropbox = [];
+    /*var dropbox = [];
     var downloadId = [];
     for (var i = 0; i < imgArr.length; i++) {
         dropbox.push(new Dropbox(imgArr[i]));
@@ -29,12 +29,11 @@ function GetImageURLs(imgArr) {
     var CorrectUrl = [];
     for (var i = 0; i < dropbox.length; i++) {
         res.push(JSON.parse(dropbox[i].MakeShareLink(i, downloadId[i].async_job_id).getContentText()));
+    }*/
+    for (var i = 0; i < imgArr.length; i++) {
+        imgArr[i] = "https" + imgArr[i].slice(4);
     }
-    for (var i = 0; i < dropbox.length; i++) {
-        CorrectUrl.push((res[i].url).substr(23).slice(0, -5));
-        CorrectUrl[i] = "https://dl.dropboxusercontent.com" + CorrectUrl[i];
-    }
-    return CorrectUrl;
+    return imgArr;
 }
 
 Dropbox.prototype = {
