@@ -16,7 +16,10 @@ Wear.prototype.getUrlJsons = function(highTmp, lowTmp, amWe, pmWe, gender){
 
   targetDate.sort(function(a, b){return b.d - a.d;});
   Logger.log(targetDate);
-  SlackLog(targetDate);
+  var dateText = "";
+  for (var i = 0; i < targetDate.length; i++)
+    dateText += targetDate[i].m + "/" + targetDate[i].d + " ";
+  SlackLog(dateText);
 
   for (var i = 0; i < targetDate.length; i++){
     var d = new Date(targetDate[i].y, targetDate[i].m-1, targetDate[i].d);

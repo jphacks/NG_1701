@@ -32,8 +32,9 @@ Goo.prototype = {
   },
   getWeatherInfo : function(){
     var today = new Date();
-    return this.getWeatherInfoFromDate(new Date(today.getYear(), today.getMonth()-1, today.getDate())).concat(this.getWeatherInfoFromDate(today)).concat(this.getWeatherInfoFromDate(new Date(today.getYear()-1, today.getMonth()+1, today.getDate())));
-  },
+//    return this.getWeatherInfoFromDate(new Date(today.getYear(), today.getMonth()-1, today.getDate())).concat(this.getWeatherInfoFromDate(today)).concat(this.getWeatherInfoFromDate(new Date(today.getYear()-1, today.getMonth()+1, today.getDate())));
+    return this.getWeatherInfoFromDate(new Date(today.getYear(), today.getMonth()-1, today.getDate())).concat(this.getWeatherInfoFromDate(today));
+    },
   getWeatherInfoFromDate : function(date){
     var m = date.getMonth()+1;
     if(m < 10) m = '0' + m;
