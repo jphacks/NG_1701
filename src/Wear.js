@@ -136,5 +136,5 @@ Wear.prototype.castDate = function(displayDate){
 function Uchida_Test(){
 //  var wear = new Wear();
 //  wear.getUrlJsons(18.3,17,"晴", "雲", "women");
-  pushTriggerData("U93951236c245cfaa1818f60818e119ce");
+//  pushTriggerData(USER_ID);
 }
