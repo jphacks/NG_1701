@@ -23,7 +23,7 @@ SamplePush.prototype.push = function(){
   var indexinfo = new Indexinfo();
   var discomindex = indexinfo.discomfort(this.weather);
   var atugido = indexinfo.atugido(discomindex);
-  var text = makematerial.makeText(athugido);
+  var text = makematerial.makeText(atugido);
   var raintext = makematerial.makeRainText(this.weather);
   var push = new Push();
   push.pushtext2(text,this.userId);
