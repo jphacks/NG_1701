@@ -65,15 +65,21 @@ function setTrigger() {
 //トリガーで実行される関数。
 function PushByTime() {
     var userNum = Number(CacheService.getScriptCache().get("userId-num"));
+    if (userNum <= 0) {
+        userNum = 1;
+    }
     CacheService.getScriptCache().put("userId-num", String(userNum + 1));
-    SlackLog("Trigger Start");
+    SlackLog("Trigger Start : " + userNum);
     var pushSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[1];
     var userId = pushSheet.getRange(1, userNum + 1).getValue();
-    try {
-        pushTriggerData(userId); //userIdを引数とする関数をここにセット
-        SlackLog("Pushed : " + userId);
-    } catch (e) {
-        SlackLog(e.message);
+    while (true) {
+        try {
+            pushTriggerData(userId); //userIdを引数とする関数をここにセット
+            SlackLog("Pushed : " + userId);
+            break;
+        } catch (e) {
+            SlackLog(e.message);
+        }
     }
     if (pushSheet.getRange(1, userNum + 2).getValue() == "") {
         pushSheet.deleteRow(1);
