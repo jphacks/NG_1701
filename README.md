@@ -1,7 +1,7 @@
 
 # ModerateClothes
 
-[![Product Name](https://raw.github.com/GabLeRoux/WebMole/master/ressources/WebMole_Youtube_Video.png)](https://www.youtube.com/channel/UC4PtjOfZTbVp9DwtJv82Lzg)
+[![Product Name](thumbnail.png)](https://youtu.be/l51pYL7iX4g)
 
 ## 製品概要
 ### Cloth(服) × Tech
@@ -20,7 +20,11 @@
 　通知の欲しいタイミング、性別、住んでいる地域を登録するだけで、今日の温度と気温差のデータから、それにあった最適な服装を通知でお知らせします。
 
 1.まずはラインで友達登録。  
+![QRコード](linebot.png)  
+※ 友達登録は先着50名までとなります。  
 2.住んでいる地域と性別を登録。  
+※ 現在対応している地域は関東・東海・四国のみです。  
+※ 後から設定の変更が可能です。  
 3.さあ、ModerateClothesでスマートな朝を体験しましょう！！
 
 ### 特長
@@ -44,7 +48,6 @@
 
 ### 今後の展望
 - ユーザーの好みの算出をして、着る服の厚さだけでなく、ユーザーのセンスに合うファッションもサポート。
-- リッチメニューによってユーザーとインタラクティブにやり取り。地域を移動した場合や、設定をより手軽に変更できるようにします。
 - 服装に変化が少なくなる真夏や真冬には通知頻度を下げる。
 - ファッションオンライン販売サイトとの提携による収益化。最適なファッションに必要なアイテムをユーザーに示し、より効率的にその製品を宣伝することができます。
 
@@ -53,12 +56,13 @@
 ### 活用した技術
 
 #### フレームワーク・ライブラリ・モジュール・API
-* GoogleAppsScript
+* Google Apps Script
 * LINE Messaging API
 * OpenWeatherMap API
 * XML Service Service
 * GoogleDrive API
 * Dropbox API
+* Slack API(デバッグ用)
 
 #### デバイス
 * LINEアプリをインストールしたスマートフォン
@@ -66,4 +70,5 @@
 
 ### 独自開発技術（Hack Dayで開発したもの）
 #### 2日間に開発した独自の機能・技術
-*
+* 今日の気温、湿度から不快度指数を算出し、度数に合ったコメントを自動生成
+* 最高気温、最低気温、天気から今日と似た天候の日を複数算出、それらをもとにファッションサイトの画像を取得（50299113d885658a2a5752cf6da0682acc6181c2, 7ee6a018cff9461c6b680216bacc363676b491e8）

@@ -50,16 +50,16 @@ return UrlFetchApp.fetch(this.url, options);
 }
 
 Push.prototype.pushtext2 = function(text,userid){
-var postData = {
-  "to" : userid,
-  "messages" : [
-    {
-      'type':'text',
-      'text':text,
-    }
-  ]
-};
-this.pushData(postData);
+  var postData = {
+    "to" : userid,
+    "messages" : [
+      {
+        'type':'text',
+        'text':text,
+      }
+    ]
+  };
+  this.pushData(postData);
 }
 
 //うまくいかない
@@ -166,13 +166,13 @@ Push.prototype.makeActions = function(Url){
 
 //気温湿度などのデータ取得クラス
 var GetWeatherData = function(){
-
+  this.GetTime = [9,12,15,18,21];
 };
 
 //OpenWeatherMapAPIから情報を取得
 GetWeatherData.prototype.GetWeather = function(place) {
   var API_KEY="9d287aeaef7ecc9dae9837a2d2f96934";
-  var url="http://api.openweathermap.org/data/2.5/forecast?q="+place+",jp&APPID="+API_KEY+"&lang=ja&type=hour&cnt=12&units=metric";
+  var url="http://api.openweathermap.org/data/2.5/forecast?q="+place+",jp&APPID="+API_KEY+"&lang=ja&type=hour&cnt=8&units=metric";
   var responce=UrlFetchApp.fetch(url);
   //return responce.getContentText();
   var json=JSON.parse(responce.getContentText());
@@ -209,8 +209,8 @@ GetWeatherData.prototype.Layout = function(json){
 //気候データから、今日の朝昼夜の気温と湿度と天候を配列で返す
 GetWeatherData.prototype.Todaytemp = function(json){
     //[その時間からいくつ目の３時間ごとのデータか][データ番号]
-    //データ番号 0~2 朝昼夜気温 3~5 朝昼夜湿度 6~7 天気
-    var weatherlist = new Array(8);
+    //データ番号 0~2 朝昼夜気温 3~5 朝昼夜湿度 6~7 天気詳細 8~12 天気適当
+    var weatherlist = new Array(13);
     var cnt=Number(json.cnt);
     var list=new Array(cnt);
     var firstdate=new Date(Number(json.list[0].dt)*1000);
@@ -220,19 +220,28 @@ GetWeatherData.prototype.Todaytemp = function(json){
     }
     for(var i=0;i<cnt;i++){
       var date=new Date(Number(json.list[i].dt)*1000);
-      if(date.getDate()==firstdate.getDate() && date.getHours() == 9){
+      if(date.getHours() == 9){
         weatherlist[0]=json.list[i].main.temp_min;
         weatherlist[3]=json.list[i].main.humidity;
         weatherlist[6]=json.list[i].weather[0].description;
+        weatherlist[8]=json.list[i].weather[0].main;
       }
-      if(date.getDate()==firstdate.getDate() && date.getHours() == 12){
+      if(date.getHours() == 12){
         weatherlist[1]=json.list[i].main.temp;
         weatherlist[4]=json.list[i].main.humidity;
         weatherlist[7]=json.list[i].weather[0].description;
+        weatherlist[9]=json.list[i].weather[0].main;
       }
-      if(date.getDate()==firstdate.getDate() && date.getHours() == 21){
+      if(date.getHours() == 15){
+        weatherlist[10]=json.list[i].weather[0].main;
+      }
+      if(date.getHours() == 18){
+        weatherlist[11]=json.list[i].weather[0].main;
+      }
+      if(date.getHours() == 21){
         weatherlist[2]=json.list[i].main.temp;
         weatherlist[5]=json.list[i].main.humidity;
+        weatherlist[12]=json.list[i].weather[0].main;
       }
     }
     return weatherlist;
@@ -318,6 +327,7 @@ makeMaterial.prototype.makeText = function(atugido){
   var equalword;
   var minusword0;
   var minusword1;
+  var degree;
   if(atugido[2]<4){
     plusword0 = "気温が上がり";
     plusword1 = "気温が上がる";
@@ -332,10 +342,29 @@ makeMaterial.prototype.makeText = function(atugido){
     minusword1 = "涼しくなる";
   }
 
+  //形容詞の生成
+  switch (Math.abs(atugido[1]-atugido[0])) {
+    case 0:
+      degree = "";
+      break;
+    case 1:
+      degree = "少し";
+      break;
+    case 2:
+      degree = "かなり";
+      break;
+    case 3:
+      degree = "非常に";
+      break;
+    default:
+      degree = "異常なまでに";
+      break;
+  }
+
   //朝の厚着度が存在する場合
   if(atugido[0]<7){
     if(atugido[0]<atugido[1]){
-      text = "日中になると"+plusword0;
+      text = "日中になると"+degree+plusword0;
       if(atugido[1]<atugido[2]){
         text += "夜になるとさらに"+plusword1+"でしょう。";
       }else if(atugido[1]==atugido[2]){
@@ -353,7 +382,7 @@ makeMaterial.prototype.makeText = function(atugido){
         text += "夜は"+minusword1+"でしょう。";
       }
     }else if(atugido[0]>atugido[1]){
-      text = "日中になると"+minusword0;
+      text = "日中になると"+degree+minusword0;
       if(atugido[1]<atugido[2]){
         text += "夜になると"+plusword1+"でしょう。";
       }else if(atugido[1]==atugido[2]){
@@ -407,6 +436,46 @@ makeMaterial.prototype.makeText = function(atugido){
   return lasttext;
 }
 
+//雨のテキスト
+makeMaterial.prototype.makeRainText = function(todayweather){
+  //in todaytempからの天気とか入った配列
+  //out 雨が降る時間のstring
+  var text = "今日は";
+  var getweatherdata = new GetWeatherData();
+  var RainStartTime = [];
+  var RainStopTime = [];
+  RainStartTime[0] = 0;
+  RainStopTime[0] = 0;
+  for(var i=0;i<getweatherdata.GetTime.length;i++){
+    if(todayweather[i+8] == "Rain"){
+      if(RainStartTime[RainStartTime.length-1] == 0){
+        RainStartTime[RainStartTime.length-1] = getweatherdata.GetTime[i];
+      }
+      if(RainStopTime[RainStopTime.length-1] == getweatherdata.GetTime[i] || RainStopTime[RainStopTime.length-1] == 0){
+        RainStopTime[RainStopTime.length-1] = getweatherdata.GetTime[i]+3;
+      }else{
+        RainStartTime[RainStartTime.length] = getweatherdata.GetTime[i];
+        RainStopTime[RainStopTime.length] = getweatherdata.GetTime[i]+3;
+      }
+    }
+  }
+  for(var i=0;i<RainStopTime.length;i++){
+    if(i==0){
+      text += RainStartTime[i] + ":00〜";
+      text += RainStopTime[i] + ":00";
+    }else{
+      text += "と";
+      text += RainStartTime[i] + ":00〜";
+      text += RainStopTime[i] + ":00";
+    }
+  }
+  text += "に雨が降ります。傘をお忘れなく。";
+  if(RainStartTime[0] == 0){
+    text = "今日は雨は降りません";
+  }
+  return text;
+}
+
 //気温変化
 makeMaterial.prototype.TempChange = function(atugido){
   var winterurl = "https://dl.dropboxusercontent.com/s/lkgy9ahfb4sl9tt/1-1.jpg";
@@ -458,6 +527,7 @@ makeMaterial.prototype.TempChange = function(atugido){
   }
 }
 
+//トリガーで呼ばれる
 function pushTriggerData(userid){
   var push = new Push();
   var database = new Database();
@@ -469,21 +539,25 @@ function pushTriggerData(userid){
   var discomindex = indexinfo.discomfort(todayweather);
   var atugido = indexinfo.atugido(discomindex);
   var text = makematerial.makeText(atugido);
-  push.pushtext2(text,userid);
   /*
   var tempchangeurl = makematerial.TempChange(atugido);
   push.pushImageMap(userid,tempchangeurl);
   */
+  var raintext = makematerial.makeRainText(todayweather);
+
   var maxmintemp = getweatherdata.MaxMinTemp(todayweather);
   var weathers = getweatherdata.Weathers(todayweather);
   var weburl = new Array();
   var imageurl = new Array();
   var wear = new Wear();
-  var link = wear.getUrlJsons(maxmintemp[0],maxmintemp[1],weathers[0],weathers[1],"men");
+  var gender = database.GetValue(userid,"gender")
+  var link = wear.getUrlJsons(maxmintemp[0],maxmintemp[1],weathers[0],weathers[1],gender);
   for (var i=0;i<link.length;i++){
    weburl.push(link[i].link);
    imageurl.push(link[i].imgUrl);
   }
+  push.pushtext2(text,userid);
+  push.pushtext2(raintext,userid);
   if(weburl.length > 0){
     push.pushtext2("★☆参考コーディネート☆★",userid);
     push.pushCarousel(weburl,imageurl,"参考画像一覧",userid);
@@ -538,6 +612,20 @@ function testshoi2(){
   push.pushtext2("A","Ub2afb72bc67d5d5d1b264bac6f7bb90b");
   push.pushImageMap("Ub2afb72bc67d5d5d1b264bac6f7bb90b","https://dl.dropboxusercontent.com/s/pedwmdgk9u7l8tu/1-1-200.jpg");
   makematerial.TempChange(atugido);
+}
+
+function testshoi3(){
+  var userid = "Ub2afb72bc67d5d5d1b264bac6f7bb90b";
+  var push = new Push();
+  var getweatherdata = new GetWeatherData();
+  var makematerial = new makeMaterial();
+  var database = new Database();
+  var weather = getweatherdata.GetWeather(GetLocationName(database.GetValue(userid,"location")));
+  var todayweather = getweatherdata.Todaytemp(weather);
+  var raintext = makematerial.makeRainText([0,0,0,0,0,0,0,0,"Rain","Rain","Sunny","Cloud","Snow"]);
+  push.pushtext2(raintext,"Ub2afb72bc67d5d5d1b264bac6f7bb90b");
+
+  //pushTriggerData("Ub2afb72bc67d5d5d1b264bac6f7bb90b");
 }
 
 function DEMO(){
