@@ -64,12 +64,21 @@ function setTrigger() {
 
 //トリガーで実行される関数。
 function PushByTime() {
+    var randsec = Math.floor(Math.random() * 120) + 1;
+    var randmili = Math.floor(Math.random() * 1000);
+    var d1 = new Date();
+    while (true) {
+        var d2 = new Date();
+        if (d2 - d1 > randsec * 1000 + randmili) {
+            break;
+        }
+    }
     var userNum = Number(CacheService.getScriptCache().get("userId-num"));
     if (userNum <= 0) {
         userNum = 1;
     }
     CacheService.getScriptCache().put("userId-num", String(userNum + 1));
-    SlackLog("Trigger Start : " + userNum);
+    SlackLog("Trigger Start : " + userNum + "\nStartTime" + d1 + "\nTime : " + randsec + "." + randmili);
     var pushSheet = SpreadsheetApp.openById(SPREAD_SHEET_ID).getSheets()[1];
     var userId = pushSheet.getRange(1, userNum + 1).getValue();
     while (true) {
