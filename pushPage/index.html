@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang=“ja”>
+ <head>
+  <meta http-equiv="content-language" content="ja">
+  <meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <title>デモ通知</title>
+ </head>
+ <body>
+   <div style="text-align: center;">
+     <h1> ModerateClothesのデモ通知 </h1>
+     <!-- ログイン部分 -->
+     <div style="height: 50px;">
+     <a>ユーザー名：</a>
+     <input type="text" name="loginUser" size="20" maxlength="10">
+     <a>　パスワード：</a>
+     <input type="text" name="password" size="20" maxlength="10">
+     <a>　</a>
+     <button type="button" name="loginEnter" value="loginEnter" onclick="login()">認証</button>
+     </div>
+     <!-- 通知部分 -->
+     <div style="height: 50px;">
+     <a>通知内容：</a>
+     <select name="content" style="width: 120px;">
+     </select>
+     <a>　通知先：</a>
+     <select name="userId" style="width: 120px;">
+     </select>
+     <a>　</a>
+     <button type="button" name="pushEnter" value="pushEnter" onclick="push()">送信</button>
+     </div>
+     <!-- ログ表示部分 -->
+     <div style="height: 50px;">
+       <a id="log"></a>
+     </div>
+   </div>
+
+   <!-- script -->
+   <script src="script.js"></script>
+ </body>
+</html>
